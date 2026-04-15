@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOBSTER EXCHANGE | 龍蝦幣區塊鏈交易中心</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --panel: rgba(18, 18, 28, 0.88);
+      --panel-strong: rgba(10, 10, 15, 0.96);
+      --yellow: #fcee09;
+      --magenta: #ff003c;
+      --cyan: #00f0ff;
+      --green: #65ff87;
+      --text: #f8f8ff;
+      --muted: #8c93ab;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow-yellow: 0 0 12px rgba(252, 238, 9, 0.45), 0 0 32px rgba(252, 238, 9, 0.16);
+      --shadow-cyan: 0 0 12px rgba(0, 240, 255, 0.4), 0 0 28px rgba(0, 240, 255, 0.18);
+      --shadow-magenta: 0 0 12px rgba(255, 0, 60, 0.4), 0 0 28px rgba(255, 0, 60, 0.18);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 0, 60, 0.12), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(0, 240, 255, 0.12), transparent 20%),
+        linear-gradient(180deg, #0d0d14 0%, #09090d 45%, #050507 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03) 0,
+        rgba(255,255,255,0.03) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      opacity: 0.16;
+      mix-blend-mode: soft-light;
+      animation: scanMove 12s linear infinite;
+      z-index: 10;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(120deg, transparent 0%, rgba(0,240,255,0.06) 45%, transparent 60%);
+      transform: translateX(-100%);
+      animation: sweep 7s linear infinite;
+      z-index: 9;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(10, 10, 15, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 78px;
+    }
+
+    .logo {
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      color: var(--yellow);
+      text-shadow: var(--shadow-yellow);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.92rem;
+      transition: 0.25s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+    }
+
+    .wallet-btn,
+    .cta-btn,
+    .ghost-btn,
+    .stake-btn {
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .wallet-btn,
+    .cta-btn {
+      background: linear-gradient(90deg, rgba(252, 238, 9, 0.95), rgba(255, 0, 60, 0.95));
+      color: #111;
+      padding: 12px 18px;
+      border-radius: 999px;
+      box-shadow: 0 0 18px rgba(255, 0, 60, 0.3), 0 0 24px rgba(252, 238, 9, 0.16);
+    }
+
+    .wallet-btn:hover,
+    .cta-btn:hover,
+    .stake-btn:hover,
+    .ghost-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      padding: 64px 0 24px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(20,20,32,0.92), rgba(8,8,12,0.95));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(252,238,9,0.7), rgba(0,240,255,0.25), rgba(255,0,60,0.6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.72;
+    }
+
+    .hero-copy {
+      padding: 38px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cyan);
+      font-size: 0.78rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 7vw, 5.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--yellow);
+      text-shadow: 0 0 20px rgba(252, 238, 9, 0.45);
+      position: relative;
+    }
+
+    .glitch {
+      position: relative;
+      display: inline-block;
+      animation: glitchSkew 3s infinite steps(1);
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .glitch::before {
+      transform: translate(2px, -1px);
+      color: var(--magenta);
+      clip-path: polygon(0 8%, 100% 0, 100% 34%, 0 38%);
+      animation: glitch1 2.2s infinite steps(2);
+    }
+
+    .glitch::after {
+      transform: translate(-3px, 1px);
+      color: var(--cyan);
+      clip-path: polygon(0 60%, 100% 48%, 100% 100%, 0 100%);
+      animation: glitch2 2.8s infinite steps(2);
+    }
+
+    .hero-copy p {
+      color: #c3c8db;
+      line-height: 1.8;
+      font-size: 1rem;
+      max-width: 60ch;
+      margin: 20px 0 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .ghost-btn {
+      background: rgba(0, 240, 255, 0.08);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.35);
+      padding: 12px 18px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-cyan);
+    }
+
+    .price-panel {
+      padding: 28px;
+      display: grid;
+      gap: 16px;
+      align-content: center;
+    }
+
+    .price-panel h2,
+    .section-title {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .price-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .price-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 12px;
+    }
+
+    .price-value {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--yellow);
+      text-shadow: var(--shadow-yellow);
+    }
+
+    .price-change {
+      color: var(--green);
+      font-weight: 800;
+      text-shadow: 0 0 12px rgba(101,255,135,0.38);
+    }
+
+    .stat-grid,
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat,
+    .metric {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .label {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .trade-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    .chart-panel,
+    .trade-panel,
+    .tokenomics-layout,
+    .staking-grid,
+    .nft-grid,
+    .dao-grid {
+      position: relative;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      max-width: 58ch;
+    }
+
+    .chart-card {
+      padding: 22px;
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .chart-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,240,255,0.22);
+      background: rgba(0,240,255,0.08);
+      color: var(--cyan);
+      font-size: 0.75rem;
+    }
+
+    .candles {
+      flex: 1;
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      border-radius: 18px;
+      padding: 24px 14px 18px;
+      background:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        rgba(255,255,255,0.02);
+      background-size: 100% 20%, 8% 100%, auto;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .candles::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 36%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(252,238,9,0.8), transparent);
+      box-shadow: 0 0 18px rgba(252,238,9,0.35);
+      animation: pulseLine 3s ease-in-out infinite;
+    }
+
+    .candle {
+      flex: 1;
+      min-width: 14px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      animation: floatCandle 3.5s ease-in-out infinite;
+    }
+
+    .candle::before {
+      content: "";
+      position: absolute;
+      bottom: calc(var(--body-height) + 6px);
+      width: 2px;
+      height: var(--wick-top);
+      background: currentColor;
+      opacity: 0.8;
+    }
+
+    .candle::after {
+      content: "";
+      position: absolute;
+      bottom: -18px;
+      width: 2px;
+      height: var(--wick-bottom);
+      background: currentColor;
+      opacity: 0.7;
+    }
+
+    .candle-body {
+      width: 100%;
+      max-width: 18px;
+      height: var(--body-height);
+      border-radius: 5px 5px 2px 2px;
+      background: currentColor;
+      box-shadow: 0 0 14px color-mix(in srgb, currentColor 55%, transparent);
+    }
+
+    .up {
+      color: var(--cyan);
+    }
+
+    .down {
+      color: var(--magenta);
+    }
+
+    .trade-card {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 6px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .toggle button {
+      background: transparent;
+      color: var(--muted);
+      border: 0;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .toggle button.active {
+      background: linear-gradient(90deg, rgba(252,238,9,0.2), rgba(255,0,60,0.2));
+      color: var(--yellow);
+      box-shadow: inset 0 0 0 1px rgba(252,238,9,0.35), var(--shadow-yellow);
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(0,240,255,0.52);
+      box-shadow: var(--shadow-cyan);
+    }
+
+    .estimate-box {
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .estimate-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #dde1f2;
+      font-size: 0.92rem;
+    }
+
+    .estimate-row .muted { color: var(--muted); }
+
+    .cta-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 1rem;
+      border-radius: 16px;
+      text-transform: uppercase;
+      box-shadow: 0 0 18px rgba(255,0,60,0.28), 0 0 28px rgba(252,238,9,0.18);
+    }
+
+    .gas {
+      color: var(--cyan);
+      font-size: 0.84rem;
+      text-align: center;
+      text-shadow: var(--shadow-cyan);
+    }
+
+    .tokenomics-wrap {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .pie-card,
+    .info-card,
+    .stake-card,
+    .nft-card,
+    .dao-card {
+      padding: 24px;
+    }
+
+    .pie-wrap {
+      display: grid;
+      place-items: center;
+      gap: 18px;
+      min-height: 100%;
+    }
+
+    .pie {
+      width: min(300px, 75vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--yellow) 0 40%,
+        var(--cyan) 40% 60%,
+        #b100ff 60% 75%,
+        var(--magenta) 75% 90%,
+        #00ff9c 90% 100%
+      );
+      box-shadow: 0 0 30px rgba(252,238,9,0.18), 0 0 36px rgba(0,240,255,0.12);
+      position: relative;
+    }
+
+    .pie::after {
+      content: "$LOBSTER";
+      position: absolute;
+      inset: 22%;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(10,10,15,0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      letter-spacing: 0.18em;
+      font-weight: 800;
+      text-shadow: var(--shadow-yellow);
+    }
+
+    .legend {
+      display: grid;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #dce1f0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .legend-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #dde2f3;
+      line-height: 1.5;
+    }
+
+    .staking-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .stake-card {
+      display: grid;
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .stake-card.featured {
+      transform: translateY(-6px);
+      box-shadow: 0 0 22px rgba(255, 0, 60, 0.22), 0 16px 42px rgba(0,0,0,0.35);
+    }
+
+    .stake-card .apy {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--yellow);
+      text-shadow: var(--shadow-yellow);
+    }
+
+    .stake-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(0,240,255,0.08);
+      color: var(--cyan);
+      border-color: rgba(0,240,255,0.32);
+      box-shadow: var(--shadow-cyan);
+    }
+
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .nft-card {
+      overflow: hidden;
+      display: grid;
+      gap: 14px;
+    }
+
+    .nft-art {
+      border-radius: 16px;
+      aspect-ratio: 1 / 1.08;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(252,238,9,0.45), transparent 20%),
+        radial-gradient(circle at 70% 75%, rgba(255,0,60,0.45), transparent 22%),
+        linear-gradient(135deg, #111420, #201026 45%, #07131f 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      place-items: center;
+      font-size: 3rem;
+      box-shadow: inset 0 0 30px rgba(255,255,255,0.05);
+    }
+
+    .nft-art::before {
+      content: "";
+      position: absolute;
+      inset: auto -15% -30% auto;
+      width: 70%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, transparent, rgba(0,240,255,0.18));
+      transform: rotate(25deg);
+    }
+
+    .nft-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nft-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--yellow);
+      text-shadow: var(--shadow-yellow);
+      font-size: 0.88rem;
+    }
+
+    .dao-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .vote-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .vote-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--yellow));
+      box-shadow: 0 0 16px rgba(0,240,255,0.28);
+    }
+
+    .footer {
+      padding: 42px 0 60px;
+      text-align: center;
+      color: #c6cada;
+    }
+
+    .footer-line {
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+    }
+
+    .counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--cyan);
+      text-shadow: var(--shadow-cyan);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes scanMove {
+      0% { transform: translateY(-10px); }
+      100% { transform: translateY(10px); }
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    @keyframes glitch1 {
+      0%, 100% { transform: translate(0); opacity: 0.45; }
+      20% { transform: translate(4px, -2px); opacity: 0.85; }
+      40% { transform: translate(-2px, 2px); opacity: 0.4; }
+      60% { transform: translate(3px, 0); opacity: 0.7; }
+      80% { transform: translate(-3px, -1px); opacity: 0.55; }
+    }
+
+    @keyframes glitch2 {
+      0%, 100% { transform: translate(0); opacity: 0.35; }
+      25% { transform: translate(-4px, 2px); opacity: 0.78; }
+      50% { transform: translate(2px, -2px); opacity: 0.48; }
+      75% { transform: translate(-2px, 1px); opacity: 0.68; }
+    }
+
+    @keyframes glitchSkew {
+      0%, 100% { transform: skew(0deg); }
+      48% { transform: skew(0deg); }
+      49% { transform: skew(1deg); }
+      50% { transform: skew(-1deg); }
+      51% { transform: skew(0deg); }
+    }
+
+    @keyframes floatCandle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes pulseLine {
+      0%, 100% { opacity: 0.35; transform: translateY(0); }
+      50% { opacity: 0.95; transform: translateY(-14px); }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .trade-layout,
+      .tokenomics-wrap,
+      .staking-grid,
+      .nft-grid,
+      .dao-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stake-card.featured {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        padding: 14px 0;
+        justify-content: center;
+      }
+
+      .hero-copy,
+      .price-panel,
+      .chart-card,
+      .trade-card,
+      .pie-card,
+      .info-card,
+      .stake-card,
+      .nft-card,
+      .dao-card {
+        padding: 18px;
+      }
+
+      .stat-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .price-main,
+      .section-head,
+      .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .candles {
+        gap: 6px;
+        padding-inline: 10px;
+      }
+
+      .logo {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#top" class="logo">🦞 LOBSTER EXCHANGE</a>
+      <div class="nav-links">
+        <a href="#trade">交易</a>
+        <a href="#tokenomics">龍蝦幣</a>
+        <a href="#nft">NFT</a>
+        <a href="#dao">DAO</a>
+        <a href="#staking">Staking</a>
+      </div>
+      <button class="wallet-btn" type="button">Connect Wallet</button>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero reveal">
+      <div class="container hero-grid">
+        <div class="panel hero-copy">
+          <span class="eyebrow">Polygon Meme Finance Protocol</span>
+          <h1><span class="glitch" data-text="龍蝦幣 $LOBSTER">龍蝦幣 $LOBSTER</span></h1>
+          <p>全球首個由龍蝦王發行的迷因代幣，活在 Polygon 鏈上。這不是普通代幣，而是一場來自深海與未來都市的金融霓虹暴動。模擬交易、模擬收益、模擬治理，一切都像真的一樣閃瞎你的鏈上視網膜。</p>
+          <div class="hero-actions">
+            <a class="cta-btn" href="#trade">立即進入交易中心</a>
+            <a class="ghost-btn" href="#tokenomics">查看 Tokenomics</a>
+          </div>
+        </div>
+
+        <aside class="panel price-panel">
+          <h2>即時市場面板</h2>
+          <div class="price-box">
+            <div class="price-main">
+              <div>
+                <span class="label">$LOBSTER / USD</span>
+                <div class="price-value">$0.0069</div>
+              </div>
+              <div class="price-change">+420.69%</div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat">
+                <span class="label">Market Cap</span>
+                <span class="value">$6,900,000</span>
+              </div>
+              <div class="stat">
+                <span class="label">Total Supply</span>
+                <span class="value">1,000,000,000</span>
+              </div>
+              <div class="stat">
+                <span class="label">鏈上網路</span>
+                <span class="value">Polygon</span>
+              </div>
+              <div class="stat">
+                <span class="label">流動狀態</span>
+                <span class="value">HOT / NEON</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="trade" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">模擬鏈上交易介面</h2>
+            <div class="section-sub">純展示用途的未來派交易面板。K 線為視覺模擬，數據與下單功能皆為虛構，但酷度必須真實存在。</div>
+          </div>
+        </div>
+
+        <div class="trade-layout">
+          <div class="panel chart-card">
+            <div class="chart-top">
+              <div>
+                <span class="label">LOBSTER / USDT</span>
+                <div class="price-value" style="font-size: 2rem;">$0.0069</div>
+              </div>
+              <div class="badge-row">
+                <span class="badge">1m</span>
+                <span class="badge">15m</span>
+                <span class="badge">1h</span>
+                <span class="badge">4h</span>
+                <span class="badge">1D</span>
+              </div>
+            </div>
+            <div class="candles" id="candles"></div>
+            <div class="metrics">
+              <div class="metric">
+                <span class="label">24H Volume</span>
+                <span class="value">$1,420,690</span>
+              </div>
+              <div class="metric">
+                <span class="label">Liquidity</span>
+                <span class="value">$690,000</span>
+              </div>
+              <div class="metric">
+                <span class="label">Top Bid</span>
+                <span class="value">0.0068</span>
+              </div>
+              <div class="metric">
+                <span class="label">Top Ask</span>
+                <span class="value">0.0070</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel trade-card">
+            <div>
+              <span class="label">Swap Module</span>
+              <h3 style="margin: 6px 0 0; font-size: 1.5rem;">交易終端</h3>
+            </div>
+
+            <div class="toggle" id="tradeToggle">
+              <button type="button" class="active" data-mode="buy">Buy</button>
+              <button type="button" data-mode="sell">Sell</button>
+            </div>
+
+            <div class="field">
+              <label for="amount">數量</label>
+              <input id="amount" type="number" min="1" value="1000" step="100" />
+            </div>
+
+            <div class="field">
+              <label for="pair">交易對</label>
+              <select id="pair">
+                <option>$LOBSTER / USDT</option>
+                <option>$LOBSTER / MATIC</option>
+                <option>$LOBSTER / WETH</option>
+              </select>
+            </div>
+
+            <div class="estimate-box">
+              <div class="estimate-row"><span class="muted">模式</span><strong id="modeText">BUY</strong></div>
+              <div class="estimate-row"><span class="muted">預估成交金額</span><strong id="estimateUsd">$6.90</strong></div>
+              <div class="estimate-row"><span class="muted">滑價容忍</span><strong>0.69%</strong></div>
+              <div class="estimate-row"><span class="muted">你將收到</span><strong id="estimateReceive">1000 $LOBSTER</strong></div>
+            </div>
+
+            <button class="cta-btn" type="button">Swap Now</button>
+            <div class="gas">Estimated Gas Fee: 0.0042 MATIC ≈ $0.01</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tokenomics" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Lobster Coin Tokenomics</h2>
+            <div class="section-sub">從公開銷售到空投與流動性，這份配置讓每一隻鏈上龍蝦都有自己在深海金融版圖的位置。</div>
+          </div>
+        </div>
+
+        <div class="tokenomics-wrap">
+          <div class="panel pie-card">
+            <div class="pie-wrap">
+              <div class="pie" aria-label="LOBSTER 代幣分配圓餅圖"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-left"><span class="dot" style="color:#fcee09;background:#fcee09"></span>公開銷售</span><strong>40%</strong></div>
+                <div class="legend-item"><span class="legend-left"><span class="dot" style="color:#00f0ff;background:#00f0ff"></span>質押獎勵</span><strong>20%</strong></div>
+                <div class="legend-item"><span class="legend-left"><span class="dot" style="color:#b100ff;background:#b100ff"></span>開發團隊</span><strong>15%</strong></div>
+                <div class="legend-item"><span class="legend-left"><span class="dot" style="color:#ff003c;background:#ff003c"></span>社群空投</span><strong>15%</strong></div>
+                <div class="legend-item"><span class="legend-left"><span class="dot" style="color:#00ff9c;background:#00ff9c"></span>流動性池</span><strong>10%</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel info-card">
+            <div class="info-list">
+              <div class="info-row"><span>代幣名稱</span><strong>Lobster Coin</strong></div>
+              <div class="info-row"><span>代號</span><strong>$LOBSTER</strong></div>
+              <div class="info-row"><span>總供應量</span><strong>1,000,000,000</strong></div>
+              <div class="info-row"><span>鏈</span><strong>Polygon</strong></div>
+              <div class="info-row"><span>公開銷售</span><strong>40%</strong></div>
+              <div class="info-row"><span>質押獎勵</span><strong>20%</strong></div>
+              <div class="info-row"><span>開發團隊</span><strong>15%（鎖倉 2 年）</strong></div>
+              <div class="info-row"><span>社群空投</span><strong>15%</strong></div>
+              <div class="info-row"><span>流動性池</span><strong>10%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="staking" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">質押龍蝦幣，賺取被動收入</h2>
+            <div class="section-sub">模擬 APY 高達 <span style="color:var(--yellow);text-shadow:var(--shadow-yellow);font-weight:800;">420.69%</span>，給每位相信龍蝦王的人一點霓虹色的財富幻想。</div>
+          </div>
+        </div>
+
+        <div class="staking-grid">
+          <article class="panel stake-card">
+            <span class="label">30 天鎖倉</span>
+            <h3 style="margin:0;font-size:1.6rem;">Bronze Claw Pool</h3>
+            <div class="apy">69%</div>
+            <p style="margin:0;color:#c9cede;line-height:1.8;">適合短線信徒，快速進場，快樂感受鏈上龍蝦的第一波震盪。</p>
+            <button class="stake-btn" type="button">Stake Now</button>
+          </article>
+
+          <article class="panel stake-card featured">
+            <span class="label">90 天鎖倉</span>
+            <h3 style="margin:0;font-size:1.6rem;">Neon Shell Pool</h3>
+            <div class="apy">169%</div>
+            <p style="margin:0;color:#c9cede;line-height:1.8;">中期質押方案，讓龍蝦甲殼在市場波動中吸飽電光藍能量。</p>
+            <button class="stake-btn" type="button">Stake Now</button>
+          </article>
+
+          <article class="panel stake-card">
+            <span class="label">365 天鎖倉</span>
+            <h3 style="margin:0;font-size:1.6rem;">King Lobster Vault</h3>
+            <div class="apy">420.69%</div>
+            <p style="margin:0;color:#c9cede;line-height:1.8;">獻給真正的龍蝦王信眾。一年後，你可能沒發財，但畫面一定很帥。</p>
+            <button class="stake-btn" type="button">Stake Now</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="nft" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">龍蝦王 NFT Collection</h2>
+            <div class="section-sub">四張模擬 NFT 卡片預覽。點進去可前往 <code style="color:var(--yellow)">index.html</code> 的 NFT 展示頁，延續龍蝦王宇宙。</div>
+          </div>
+          <a href="index.html" class="nft-link">前往 NFT 展示頁 →</a>
+        </div>
+
+        <div class="nft-grid">
+          <article class="panel nft-card">
+            <div class="nft-art">🦞</div>
+            <div class="nft-meta">
+              <strong>Lobster King #001</strong>
+              <span style="color:var(--muted);">黃金鉗・Genesis</span>
+            </div>
+          </article>
+          <article class="panel nft-card">
+            <div class="nft-art">👑</div>
+            <div class="nft-meta">
+              <strong>Neon Crown #069</strong>
+              <span style="color:var(--muted);">賽博王冠・Ultra Rare</span>
+            </div>
+          </article>
+          <article class="panel nft-card">
+            <div class="nft-art">⚡</div>
+            <div class="nft-meta">
+              <strong>Voltage Claw #2077</strong>
+              <span style="color:var(--muted);">電光巨鉗・Epic</span>
+            </div>
+          </article>
+          <article class="panel nft-card">
+            <div class="nft-art">🌊</div>
+            <div class="nft-meta">
+              <strong>Abyss Shell #888</strong>
+              <span style="color:var(--muted);">深海外殼・Legendary</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="dao" class="section reveal">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">龍蝦 DAO — 去中心化治理</h2>
+            <div class="section-sub">持有 $LOBSTER 即可參與投票。因為真正的未來，不只要會交易，還要能決定整個深海帝國往哪裡游。</div>
+          </div>
+        </div>
+
+        <div class="dao-grid">
+          <article class="panel dao-card">
+            <span class="label">提案 #001</span>
+            <h3 style="margin:0 0 10px;font-size:1.4rem;">是否增加質押獎勵？</h3>
+            <p style="margin:0 0 14px;color:#ccd1e2;line-height:1.8;">提案內容：提升中長期鎖倉方案獎勵，以吸引更多鑽石鉗持有者。</p>
+            <div class="estimate-row" style="margin-bottom:10px;"><span>贊成率</span><strong>89%</strong></div>
+            <div class="vote-bar"><div class="vote-fill" style="width:89%"></div></div>
+          </article>
+
+          <article class="panel dao-card">
+            <span class="label">提案 #002</span>
+            <h3 style="margin:0 0 10px;font-size:1.4rem;">是否空投給早期持有者？</h3>
+            <p style="margin:0 0 14px;color:#ccd1e2;line-height:1.8;">提案內容：對創世時期錢包地址進行額外空投，強化社群信仰與敘事熱度。</p>
+            <div class="estimate-row" style="margin-bottom:10px;"><span>贊成率</span><strong>95%</strong></div>
+            <div class="vote-bar"><div class="vote-fill" style="width:95%"></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer reveal">
+    <div class="container">
+      <div class="footer-line">© 2077 LOBSTER EXCHANGE. POWERED BY 龍蝦王. ON-CHAIN FOREVER. 🦞</div>
+      <div class="counter">
+        <span>Visitors:</span>
+        <span id="visitorCount">syncing...</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const candleWrap = document.getElementById('candles');
+    const candleData = [
+      [80, 22, 28, 'up'], [72, 16, 20, 'down'], [95, 26, 18, 'up'], [64, 20, 26, 'up'],
+      [120, 28, 22, 'up'], [88, 24, 14, 'down'], [76, 18, 24, 'up'], [130, 34, 20, 'up'],
+      [66, 14, 18, 'down'], [102, 28, 22, 'up'], [84, 20, 16, 'down'], [112, 30, 18, 'up'],
+      [74, 18, 18, 'down'], [126, 34, 22, 'up'], [92, 24, 14, 'up'], [108, 26, 18, 'down'],
+      [140, 38, 22, 'up'], [90, 24, 20, 'down'], [116, 30, 18, 'up'], [100, 22, 16, 'up']
+    ];
+
+    candleData.forEach((item, index) => {
+      const [bodyHeight, wickTop, wickBottom, trend] = item;
+      const el = document.createElement('div');
+      el.className = `candle ${trend}`;
+      el.style.setProperty('--body-height', `${bodyHeight}px`);
+      el.style.setProperty('--wick-top', `${wickTop}px`);
+      el.style.setProperty('--wick-bottom', `${wickBottom}px`);
+      el.style.animationDelay = `${index * 0.08}s`;
+
+      const body = document.createElement('div');
+      body.className = 'candle-body';
+      el.appendChild(body);
+      candleWrap.appendChild(el);
+    });
+
+    const toggle = document.getElementById('tradeToggle');
+    const amountInput = document.getElementById('amount');
+    const modeText = document.getElementById('modeText');
+    const estimateUsd = document.getElementById('estimateUsd');
+    const estimateReceive = document.getElementById('estimateReceive');
+    let mode = 'buy';
+    const price = 0.0069;
+
+    function updateEstimate() {
+      const amount = Number(amountInput.value || 0);
+      const total = amount * price;
+      modeText.textContent = mode.toUpperCase();
+      estimateUsd.textContent = `$${total.toFixed(2)}`;
+      estimateReceive.textContent = mode === 'buy'
+        ? `${amount.toLocaleString()} $LOBSTER`
+        : `$${total.toFixed(2)} USDT`;
+    }
+
+    toggle.addEventListener('click', (event) => {
+      const btn = event.target.closest('button[data-mode]');
+      if (!btn) return;
+      mode = btn.dataset.mode;
+      [...toggle.querySelectorAll('button')].forEach(button => button.classList.toggle('active', button === btn));
+      updateEstimate();
+    });
+
+    amountInput.addEventListener('input', updateEstimate);
+    updateEstimate();
+
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+
+    const visitorCount = document.getElementById('visitorCount');
+    fetch('https://counterapi.dev/api/lobster-exchange-2077/exchange-page/up')
+      .then(res => res.json())
+      .then(data => {
+        visitorCount.textContent = (data.count ?? data.value ?? 'N/A').toLocaleString();
+      })
+      .catch(() => {
+        visitorCount.textContent = 'offline';
+      });
+  </script>
+</body>
+</html>

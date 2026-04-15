@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🦞 LOBSTER DEX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --panel: rgba(14, 17, 26, 0.92);
+      --panel-2: rgba(18, 23, 35, 0.9);
+      --line: rgba(0, 240, 255, 0.18);
+      --yellow: #fcee09;
+      --magenta: #ff003c;
+      --cyan: #00f0ff;
+      --green: #00ff88;
+      --text: #d9f7ff;
+      --muted: #7792a6;
+      --red: #ff4b6e;
+      --shadow-cyan: 0 0 24px rgba(0, 240, 255, 0.18);
+      --shadow-pink: 0 0 24px rgba(255, 0, 60, 0.16);
+      --shadow-yellow: 0 0 24px rgba(252, 238, 9, 0.15);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: 'Noto Sans TC', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 0, 60, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0, 240, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, #0a0a0f 0%, #090b14 100%);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025) 0,
+        rgba(255,255,255,0.025) 1px,
+        transparent 2px,
+        transparent 5px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.22;
+      z-index: 10;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell {
+      width: min(1440px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .orbitron { font-family: 'Orbitron', sans-serif; }
+    .panel {
+      background: linear-gradient(180deg, rgba(12,15,24,0.95), rgba(9,11,18,0.92));
+      border: 1px solid rgba(0, 240, 255, 0.16);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-cyan), inset 0 0 0 1px rgba(255,255,255,0.02);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(0,240,255,0.06), transparent 40%, rgba(255,0,60,0.05));
+      opacity: 0.65;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 22px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--yellow);
+      text-shadow: 0 0 14px rgba(252, 238, 9, 0.35);
+    }
+
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.45rem;
+      background: linear-gradient(135deg, rgba(252, 238, 9, 0.18), rgba(255, 0, 60, 0.14));
+      border: 1px solid rgba(252, 238, 9, 0.3);
+      box-shadow: var(--shadow-yellow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.92rem;
+    }
+
+    .nav-links a:hover { color: var(--cyan); }
+
+    .wallet-chip {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.34);
+      border: 1px solid rgba(252, 238, 9, 0.2);
+      box-shadow: var(--shadow-yellow);
+      font-size: 0.92rem;
+    }
+
+    .wallet-chip strong { color: var(--yellow); font-family: 'Orbitron', sans-serif; }
+
+    .ticker {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ticker-card {
+      padding: 16px 18px;
+      min-height: 92px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+
+    .value-xl {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.25rem, 2vw, 2rem);
+      font-weight: 700;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .accent { color: var(--cyan); }
+    .yellow { color: var(--yellow); }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.65fr 0.9fr;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: stretch;
+    }
+
+    .chart-panel { padding: 18px; }
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .chart-title {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--cyan);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .chart-meta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chart-wrap {
+      height: 420px;
+      position: relative;
+      border-radius: 16px;
+      border: 1px solid rgba(0,240,255,0.14);
+      background: linear-gradient(180deg, rgba(2,8,15,0.95), rgba(9,12,20,0.86));
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .trade-panel { padding: 18px; }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .segment-btn, .action-btn {
+      border: 1px solid rgba(0,240,255,0.16);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 14px;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .segment-btn.active.buy {
+      background: rgba(0,255,136,0.12);
+      color: var(--green);
+      border-color: rgba(0,255,136,0.32);
+      box-shadow: 0 0 20px rgba(0,255,136,0.12);
+    }
+
+    .segment-btn.active.sell {
+      background: rgba(255,0,60,0.12);
+      color: var(--magenta);
+      border-color: rgba(255,0,60,0.32);
+      box-shadow: 0 0 20px rgba(255,0,60,0.12);
+    }
+
+    .segment-btn:hover, .action-btn:hover { transform: translateY(-1px); }
+
+    .form-row { margin-bottom: 13px; }
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,240,255,0.14);
+      background: rgba(4, 10, 18, 0.95);
+    }
+
+    .input-wrap input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      padding: 14px 0;
+      font-size: 1rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .unit { color: var(--yellow); font-family: 'Orbitron', sans-serif; font-size: 0.88rem; }
+
+    .calc-box {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+      margin: 12px 0 14px;
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .action-btn {
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 15px 16px;
+    }
+
+    .action-btn.buy {
+      background: linear-gradient(135deg, rgba(0,255,136,0.16), rgba(0,240,255,0.1));
+      color: var(--green);
+      border-color: rgba(0,255,136,0.28);
+    }
+
+    .action-btn.sell {
+      background: linear-gradient(135deg, rgba(255,0,60,0.18), rgba(255,80,120,0.08));
+      color: #ff7f98;
+      border-color: rgba(255,0,60,0.28);
+    }
+
+    .hint, .error {
+      min-height: 24px;
+      margin-top: 12px;
+      font-size: 0.92rem;
+    }
+
+    .error { color: var(--red); }
+    .hint { color: var(--cyan); }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .book-panel, .history-panel, .account-panel { padding: 18px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      font-size: 0.95rem;
+    }
+
+    .orderbook {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .book-side {
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 12px;
+    }
+
+    .book-side h4 {
+      margin: 0 0 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+    }
+
+    .rows, .history-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .book-row, .history-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.9rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.22);
+    }
+
+    .book-row span:last-child, .history-row span:last-child { text-align: right; }
+
+    .history-row {
+      grid-template-columns: 88px 64px 1fr 1fr;
+      align-items: center;
+    }
+
+    .history-row.user {
+      background: rgba(252,238,9,0.12);
+      border: 1px solid rgba(252,238,9,0.22);
+      box-shadow: 0 0 14px rgba(252,238,9,0.08);
+    }
+
+    .history-wrap {
+      max-height: 376px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .history-wrap::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .history-wrap::-webkit-scrollbar-thumb {
+      background: rgba(0,240,255,0.18);
+      border-radius: 999px;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .metric-card .metric-value {
+      font-family: 'Orbitron', sans-serif;
+      margin-top: 10px;
+      font-size: 1.05rem;
+      word-break: break-word;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .glow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+    }
+
+    @media (max-width: 1120px) {
+      .ticker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .top-grid, .bottom-grid { grid-template-columns: 1fr; }
+      .account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 16px, 100%); padding-top: 10px; }
+      .nav { padding: 16px; align-items: flex-start; flex-direction: column; }
+      .wallet-chip { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+      .ticker { grid-template-columns: 1fr; }
+      .chart-wrap { height: 320px; }
+      .orderbook { grid-template-columns: 1fr; }
+      .history-row { grid-template-columns: 72px 52px 1fr 1fr; font-size: 0.82rem; }
+      .account-grid { grid-template-columns: 1fr; }
+      .footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="panel nav">
+      <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+        <div class="brand orbitron">
+          <div class="brand-badge">🦞</div>
+          <div>LOBSTER DEX</div>
+        </div>
+        <nav class="nav-links">
+          <a href="#">交易</a>
+          <a href="#">龍蝦幣</a>
+          <a href="#">NFT</a>
+          <a href="#">Exchange</a>
+        </nav>
+      </div>
+      <div class="wallet-chip">
+        <span>模擬錢包</span>
+        <strong id="walletTop">10,000.00 USDT / 0.00 LOBSTER</strong>
+      </div>
+    </header>
+
+    <section class="ticker">
+      <div class="panel ticker-card">
+        <div class="label">即時價格</div>
+        <div class="value-xl accent" id="priceNow">$0.006900</div>
+      </div>
+      <div class="panel ticker-card">
+        <div class="label">24H 漲跌幅</div>
+        <div class="value-xl" id="priceChange24h">+0.00%</div>
+      </div>
+      <div class="panel ticker-card">
+        <div class="label">24H 最高</div>
+        <div class="value-xl yellow" id="priceHigh24h">$0.006900</div>
+      </div>
+      <div class="panel ticker-card">
+        <div class="label">24H 最低</div>
+        <div class="value-xl" id="priceLow24h">$0.006900</div>
+      </div>
+    </section>
+
+    <section class="top-grid">
+      <div class="panel chart-panel">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">LOBSTER / USDT — CYBER CANDLE ENGINE</div>
+            <div class="label" style="margin-top:6px; margin-bottom:0;">每 2 秒形成一根 K 線，最多保留 60 根</div>
+          </div>
+          <div class="chart-meta">
+            <div>最新成交 <span class="accent orbitron" id="lastTrade">$0.006900</span></div>
+            <div>成交量 <span class="yellow orbitron" id="lastVolume">0</span></div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartCanvas"></canvas>
+        </div>
+      </div>
+
+      <aside class="panel trade-panel">
+        <div class="section-head">
+          <div class="section-title">交易面板</div>
+          <div class="pill"><span class="glow-dot"></span>SIM LIVE</div>
+        </div>
+
+        <div class="segmented">
+          <button class="segment-btn active buy" id="buyModeBtn">BUY</button>
+          <button class="segment-btn" id="sellModeBtn">SELL</button>
+        </div>
+
+        <div class="form-row">
+          <div class="field-label">
+            <span id="inputLabel">輸入 USDT 金額</span>
+            <span id="balanceHint">可用餘額：10,000.00 USDT</span>
+          </div>
+          <div class="input-wrap">
+            <input id="tradeInput" type="number" min="0" step="0.0001" placeholder="0.0000" />
+            <span class="unit" id="inputUnit">USDT</span>
+          </div>
+        </div>
+
+        <div class="calc-box" id="calcBox">
+          你將可獲得：<strong class="yellow">0.00 LOBSTER</strong><br>
+          參考價格：<span class="accent">$0.006900</span>
+        </div>
+
+        <button class="action-btn buy" id="submitTradeBtn">Buy LOBSTER</button>
+        <div class="error" id="tradeError"></div>
+        <div class="hint" id="tradeHint">龍蝦王流動性充足，可以放心模擬下單。</div>
+      </aside>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel book-panel">
+        <div class="section-head">
+          <div class="section-title">ORDER BOOK</div>
+          <div class="label" style="margin:0;">每 3 秒刷新</div>
+        </div>
+        <div class="orderbook">
+          <div class="book-side">
+            <h4 class="positive">買單 / BIDS</h4>
+            <div class="rows" id="buyOrders"></div>
+          </div>
+          <div class="book-side">
+            <h4 class="negative">賣單 / ASKS</h4>
+            <div class="rows" id="sellOrders"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel history-panel">
+        <div class="section-head">
+          <div class="section-title">TRADE HISTORY</div>
+          <div class="label" style="margin:0;">系統每 4 秒自動產生一筆</div>
+        </div>
+        <div class="history-wrap">
+          <div class="history-rows" id="tradeHistory"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel account-panel" style="margin-bottom:14px;">
+      <div class="section-head">
+        <div class="section-title">帳戶面板</div>
+        <div class="pill">PnL CORE</div>
+      </div>
+      <div class="account-grid">
+        <div class="metric-card">
+          <div class="label">USDT 餘額</div>
+          <div class="metric-value" id="accountUsdt">10,000.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">LOBSTER 餘額</div>
+          <div class="metric-value" id="accountLobster">0.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">總資產估值</div>
+          <div class="metric-value" id="accountEquity">10,000.00 USDT</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">持倉均價</div>
+          <div class="metric-value" id="accountAvgCost">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">未實現盈虧</div>
+          <div class="metric-value" id="accountPnl">0.00 USDT</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="panel footer">
+      <div>© 2077 LOBSTER DEX. POWERED BY 龍蝦王. ON-CHAIN FOREVER. 🦞</div>
+      <div class="pill">訪客計數：<span id="visitorCount">載入中...</span></div>
+    </footer>
+  </div>
+
+  <script>
+    const state = {
+      currentPrice: 0.0069,
+      basePrice24h: 0.0069,
+      high24h: 0.0069,
+      low24h: 0.0069,
+      wallet: {
+        usdt: 10000,
+        lobster: 0,
+        costBasisTotal: 0
+      },
+      mode: 'buy',
+      candles: [],
+      orderBook: { bids: [], asks: [] },
+      tradeHistory: []
+    };
+
+    const dom = {
+      walletTop: document.getElementById('walletTop'),
+      priceNow: document.getElementById('priceNow'),
+      priceChange24h: document.getElementById('priceChange24h'),
+      priceHigh24h: document.getElementById('priceHigh24h'),
+      priceLow24h: document.getElementById('priceLow24h'),
+      lastTrade: document.getElementById('lastTrade'),
+      lastVolume: document.getElementById('lastVolume'),
+      buyOrders: document.getElementById('buyOrders'),
+      sellOrders: document.getElementById('sellOrders'),
+      tradeHistory: document.getElementById('tradeHistory'),
+      accountUsdt: document.getElementById('accountUsdt'),
+      accountLobster: document.getElementById('accountLobster'),
+      accountEquity: document.getElementById('accountEquity'),
+      accountAvgCost: document.getElementById('accountAvgCost'),
+      accountPnl: document.getElementById('accountPnl'),
+      buyModeBtn: document.getElementById('buyModeBtn'),
+      sellModeBtn: document.getElementById('sellModeBtn'),
+      tradeInput: document.getElementById('tradeInput'),
+      inputLabel: document.getElementById('inputLabel'),
+      inputUnit: document.getElementById('inputUnit'),
+      balanceHint: document.getElementById('balanceHint'),
+      calcBox: document.getElementById('calcBox'),
+      submitTradeBtn: document.getElementById('submitTradeBtn'),
+      tradeError: document.getElementById('tradeError'),
+      tradeHint: document.getElementById('tradeHint'),
+      visitorCount: document.getElementById('visitorCount'),
+      chartCanvas: document.getElementById('chartCanvas')
+    };
+
+    const ctx = dom.chartCanvas.getContext('2d');
+
+    const fmtPrice = (n) => `$${Number(n).toFixed(6)}`;
+    const fmtQty = (n, d = 2) => Number(n).toLocaleString('zh-Hant-TW', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtTime = (date = new Date()) => date.toLocaleTimeString('zh-Hant-TW', { hour12: false });
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+    const rand = (min, max) => Math.random() * (max - min) + min;
+
+    function seedCandles() {
+      let price = state.currentPrice;
+      for (let i = 0; i < 36; i++) {
+        const open = price;
+        const delta = (Math.random() > 0.5 ? 1 : -1) * rand(0.001, 0.02);
+        const close = open * (1 + delta);
+        const high = Math.max(open, close) * (1 + rand(0.001, 0.012));
+        const low = Math.min(open, close) * (1 - rand(0.001, 0.012));
+        const volume = rand(18000, 220000);
+        price = close;
+        state.candles.push({ open, close, high, low, volume, ts: Date.now() - (36 - i) * 2000 });
+      }
+      state.currentPrice = state.candles[state.candles.length - 1].close;
+      state.basePrice24h = state.currentPrice;
+      recompute24hRange();
+    }
+
+    function recompute24hRange() {
+      const prices = state.candles.flatMap(c => [c.high, c.low, c.close]);
+      state.high24h = Math.max(...prices, state.currentPrice);
+      state.low24h = Math.min(...prices, state.currentPrice);
+    }
+
+    function updatePriceTick() {
+      const last = state.candles[state.candles.length - 1] || { close: state.currentPrice };
+      const movePct = rand(0.005, 0.03) * (Math.random() > 0.48 ? 1 : -1);
+      const open = last.close;
+      const close = clamp(open * (1 + movePct), 0.0005, 9999);
+      const high = Math.max(open, close) * (1 + rand(0.001, 0.01));
+      const low = Math.min(open, close) * (1 - rand(0.001, 0.01));
+      const volume = rand(20000, 260000);
+      state.currentPrice = close;
+      state.candles.push({ open, close, high, low, volume, ts: Date.now() });
+      if (state.candles.length > 60) state.candles.shift();
+      recompute24hRange();
+      renderAll();
+    }
+
+    function buildOrderBook() {
+      const bids = [];
+      const asks = [];
+      for (let i = 0; i < 10; i++) {
+        const bidPrice = state.currentPrice * (1 - rand(0.001, 0.035));
+        const askPrice = state.currentPrice * (1 + rand(0.001, 0.035));
+        bids.push({ price: bidPrice, amount: rand(1800, 38000) });
+        asks.push({ price: askPrice, amount: rand(1800, 38000) });
+      }
+      bids.sort((a, b) => b.price - a.price);
+      asks.sort((a, b) => a.price - b.price);
+      state.orderBook = { bids, asks };
+      renderOrderBook();
+    }
+
+    function addSystemTrade() {
+      const side = Math.random() > 0.5 ? '買' : '賣';
+      const price = state.currentPrice * (1 + rand(-0.006, 0.006));
+      const amount = rand(1200, 42000);
+      pushTrade({ time: fmtTime(), side, price, amount, isUser: false });
+    }
+
+    function pushTrade(trade) {
+      state.tradeHistory.unshift(trade);
+      if (state.tradeHistory.length > 20) state.tradeHistory.length = 20;
+      renderTradeHistory();
+    }
+
+    function renderTicker() {
+      const pct = ((state.currentPrice - state.basePrice24h) / state.basePrice24h) * 100;
+      dom.priceNow.textContent = fmtPrice(state.currentPrice);
+      dom.lastTrade.textContent = fmtPrice(state.currentPrice);
+      dom.priceHigh24h.textContent = fmtPrice(state.high24h);
+      dom.priceLow24h.textContent = fmtPrice(state.low24h);
+      dom.priceChange24h.textContent = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+      dom.priceChange24h.className = `value-xl ${pct >= 0 ? 'positive' : 'negative'}`;
+      dom.lastVolume.textContent = fmtQty(state.candles[state.candles.length - 1]?.volume || 0, 0);
+    }
+
+    function renderWallet() {
+      const avgCost = state.wallet.lobster > 0 ? state.wallet.costBasisTotal / state.wallet.lobster : 0;
+      const equity = state.wallet.usdt + state.wallet.lobster * state.currentPrice;
+      const pnl = state.wallet.lobster > 0 ? (state.currentPrice - avgCost) * state.wallet.lobster : 0;
+
+      dom.walletTop.textContent = `${fmtQty(state.wallet.usdt, 2)} USDT / ${fmtQty(state.wallet.lobster, 2)} LOBSTER`;
+      dom.accountUsdt.textContent = `${fmtQty(state.wallet.usdt, 2)} USDT`;
+      dom.accountLobster.textContent = `${fmtQty(state.wallet.lobster, 2)} LOBSTER`;
+      dom.accountEquity.textContent = `${fmtQty(equity, 2)} USDT`;
+      dom.accountAvgCost.textContent = state.wallet.lobster > 0 ? fmtPrice(avgCost) : '--';
+      dom.accountPnl.textContent = `${pnl >= 0 ? '+' : ''}${fmtQty(pnl, 2)} USDT`;
+      dom.accountPnl.className = `metric-value ${pnl >= 0 ? 'positive' : 'negative'}`;
+      updateTradeModeUI();
+    }
+
+    function renderOrderBook() {
+      const bidHtml = state.orderBook.bids.map(item => `
+        <div class="book-row">
+          <span class="positive orbitron">${fmtPrice(item.price)}</span>
+          <span>${fmtQty(item.amount, 2)}</span>
+        </div>`).join('');
+      const askHtml = state.orderBook.asks.map(item => `
+        <div class="book-row">
+          <span class="negative orbitron">${fmtPrice(item.price)}</span>
+          <span>${fmtQty(item.amount, 2)}</span>
+        </div>`).join('');
+      dom.buyOrders.innerHTML = bidHtml;
+      dom.sellOrders.innerHTML = askHtml;
+    }
+
+    function renderTradeHistory() {
+      dom.tradeHistory.innerHTML = state.tradeHistory.map(item => `
+        <div class="history-row ${item.isUser ? 'user' : ''}">
+          <span>${item.time}</span>
+          <span class="${item.side === '買' ? 'positive' : 'negative'}">${item.side}</span>
+          <span class="orbitron">${fmtPrice(item.price)}</span>
+          <span>${fmtQty(item.amount, 2)}</span>
+        </div>
+      `).join('');
+    }
+
+    function updateTradeModeUI() {
+      const buy = state.mode === 'buy';
+      dom.buyModeBtn.className = `segment-btn ${buy ? 'active buy' : ''}`;
+      dom.sellModeBtn.className = `segment-btn ${!buy ? 'active sell' : ''}`;
+      dom.inputLabel.textContent = buy ? '輸入 USDT 金額' : '輸入 LOBSTER 數量';
+      dom.inputUnit.textContent = buy ? 'USDT' : 'LOBSTER';
+      dom.submitTradeBtn.textContent = buy ? 'Buy LOBSTER' : 'Sell LOBSTER';
+      dom.submitTradeBtn.className = `action-btn ${buy ? 'buy' : 'sell'}`;
+      dom.balanceHint.textContent = buy
+        ? `可用餘額：${fmtQty(state.wallet.usdt, 2)} USDT`
+        : `可用餘額：${fmtQty(state.wallet.lobster, 2)} LOBSTER`;
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const inputValue = parseFloat(dom.tradeInput.value || '0');
+      const buy = state.mode === 'buy';
+      if (!inputValue || inputValue <= 0) {
+        dom.calcBox.innerHTML = `你將可獲得：<strong class="yellow">0.00 ${buy ? 'LOBSTER' : 'USDT'}</strong><br>參考價格：<span class="accent">${fmtPrice(state.currentPrice)}</span>`;
+        return;
+      }
+
+      if (buy) {
+        const out = inputValue / state.currentPrice;
+        dom.calcBox.innerHTML = `你將可獲得：<strong class="yellow">${fmtQty(out, 2)} LOBSTER</strong><br>成交估值：<span class="accent">${fmtPrice(state.currentPrice)}</span>`;
+      } else {
+        const out = inputValue * state.currentPrice;
+        dom.calcBox.innerHTML = `你將可獲得：<strong class="yellow">${fmtQty(out, 2)} USDT</strong><br>賣出參考價：<span class="accent">${fmtPrice(state.currentPrice)}</span>`;
+      }
+    }
+
+    function executeTrade() {
+      const amount = parseFloat(dom.tradeInput.value || '0');
+      const buy = state.mode === 'buy';
+      dom.tradeError.textContent = '';
+
+      if (!amount || amount <= 0) {
+        dom.tradeError.textContent = '請輸入有效數量。';
+        return;
+      }
+
+      if (buy) {
+        if (amount > state.wallet.usdt) {
+          dom.tradeError.textContent = 'USDT 餘額不足，無法完成買入。';
+          return;
+        }
+        const lobsterReceived = amount / state.currentPrice;
+        state.wallet.usdt -= amount;
+        state.wallet.lobster += lobsterReceived;
+        state.wallet.costBasisTotal += amount;
+        pushTrade({ time: fmtTime(), side: '買', price: state.currentPrice, amount: lobsterReceived, isUser: true });
+        dom.tradeHint.textContent = `成功買入 ${fmtQty(lobsterReceived, 2)} LOBSTER。龍蝦艦隊已補倉。`;
+      } else {
+        if (amount > state.wallet.lobster) {
+          dom.tradeError.textContent = 'LOBSTER 餘額不足，無法完成賣出。';
+          return;
+        }
+        const avgCost = state.wallet.lobster > 0 ? state.wallet.costBasisTotal / state.wallet.lobster : 0;
+        const usdtReceived = amount * state.currentPrice;
+        state.wallet.usdt += usdtReceived;
+        state.wallet.lobster -= amount;
+        state.wallet.costBasisTotal = Math.max(0, state.wallet.costBasisTotal - avgCost * amount);
+        if (state.wallet.lobster < 0.0000001) {
+          state.wallet.lobster = 0;
+          state.wallet.costBasisTotal = 0;
+        }
+        pushTrade({ time: fmtTime(), side: '賣', price: state.currentPrice, amount, isUser: true });
+        dom.tradeHint.textContent = `成功賣出 ${fmtQty(amount, 2)} LOBSTER，回收 ${fmtQty(usdtReceived, 2)} USDT。`;
+      }
+
+      dom.tradeInput.value = '';
+      renderWallet();
+      updateCalculator();
+    }
+
+    function resizeCanvas() {
+      const rect = dom.chartCanvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      dom.chartCanvas.width = Math.floor(rect.width * ratio);
+      dom.chartCanvas.height = Math.floor(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drawChart();
+    }
+
+    function drawChart() {
+      const w = dom.chartCanvas.clientWidth;
+      const h = dom.chartCanvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.fillStyle = 'rgba(7, 12, 20, 0.96)';
+      ctx.fillRect(0, 0, w, h);
+
+      const padding = { top: 18, right: 16, bottom: 24, left: 12 };
+      const volumeHeight = Math.max(82, h * 0.23);
+      const priceHeight = h - padding.top - padding.bottom - volumeHeight;
+      const candles = state.candles;
+      if (!candles.length) return;
+
+      const maxPrice = Math.max(...candles.map(c => c.high));
+      const minPrice = Math.min(...candles.map(c => c.low));
+      const maxVol = Math.max(...candles.map(c => c.volume), 1);
+      const priceRange = Math.max(maxPrice - minPrice, 0.0000001);
+      const chartWidth = w - padding.left - padding.right;
+      const candleSlot = chartWidth / candles.length;
+      const candleWidth = Math.max(3, candleSlot * 0.52);
+
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.09)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = padding.top + (priceHeight / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(w - padding.right, y);
+        ctx.stroke();
+      }
+
+      candles.forEach((candle, i) => {
+        const x = padding.left + candleSlot * i + candleSlot / 2;
+        const openY = padding.top + ((maxPrice - candle.open) / priceRange) * priceHeight;
+        const closeY = padding.top + ((maxPrice - candle.close) / priceRange) * priceHeight;
+        const highY = padding.top + ((maxPrice - candle.high) / priceRange) * priceHeight;
+        const lowY = padding.top + ((maxPrice - candle.low) / priceRange) * priceHeight;
+        const up = candle.close >= candle.open;
+        const color = up ? '#00ff88' : '#ff003c';
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(x, highY);
+        ctx.lineTo(x, lowY);
+        ctx.stroke();
+
+        const bodyY = Math.min(openY, closeY);
+        const bodyH = Math.max(2, Math.abs(closeY - openY));
+        ctx.fillStyle = color;
+        ctx.fillRect(x - candleWidth / 2, bodyY, candleWidth, bodyH);
+
+        const volBarH = (candle.volume / maxVol) * (volumeHeight - 14);
+        const volY = h - padding.bottom - volBarH;
+        ctx.globalAlpha = 0.42;
+        ctx.fillRect(x - candleWidth / 2, volY, candleWidth, volBarH);
+        ctx.globalAlpha = 1;
+      });
+
+      const last = candles[candles.length - 1];
+      const lastY = padding.top + ((maxPrice - last.close) / priceRange) * priceHeight;
+      ctx.strokeStyle = 'rgba(252, 238, 9, 0.5)';
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(padding.left, lastY);
+      ctx.lineTo(w - padding.right, lastY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#fcee09';
+      ctx.font = '12px Orbitron';
+      ctx.fillText(fmtPrice(maxPrice), w - 94, 20);
+      ctx.fillText(fmtPrice(minPrice), w - 94, padding.top + priceHeight - 4);
+      ctx.fillStyle = 'rgba(0,240,255,0.72)';
+      ctx.fillText('VOL', padding.left, h - volumeHeight - 8);
+    }
+
+    function renderAll() {
+      renderTicker();
+      renderWallet();
+      drawChart();
+    }
+
+    async function loadVisitorCount() {
+      try {
+        const res = await fetch('https://counterapi.dev/api/lobster-dex-2077/visits/up');
+        const data = await res.json();
+        dom.visitorCount.textContent = data.count?.toLocaleString('zh-Hant-TW') ?? 'N/A';
+      } catch (err) {
+        dom.visitorCount.textContent = '離線';
+      }
+    }
+
+    dom.buyModeBtn.addEventListener('click', () => {
+      state.mode = 'buy';
+      dom.tradeError.textContent = '';
+      updateTradeModeUI();
+    });
+
+    dom.sellModeBtn.addEventListener('click', () => {
+      state.mode = 'sell';
+      dom.tradeError.textContent = '';
+      updateTradeModeUI();
+    });
+
+    dom.tradeInput.addEventListener('input', updateCalculator);
+    dom.submitTradeBtn.addEventListener('click', executeTrade);
+    window.addEventListener('resize', resizeCanvas);
+
+    seedCandles();
+    buildOrderBook();
+    for (let i = 0; i < 8; i++) addSystemTrade();
+    renderAll();
+    renderTradeHistory();
+    requestAnimationFrame(resizeCanvas);
+    loadVisitorCount();
+
+    setInterval(updatePriceTick, 2000);
+    setInterval(buildOrderBook, 3000);
+    setInterval(addSystemTrade, 4000);
+  </script>
+</body>
+</html>

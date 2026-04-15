@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="龍蝦王 NFT Collection — 1000 隻獨一無二的 AI 龍蝦，活在區塊鏈上的 Cyberpunk 展示頁面。"
+    />
+    <title>龍蝦王 NFT Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --bg-soft: #11111a;
+        --panel: rgba(16, 18, 28, 0.74);
+        --line: rgba(255, 255, 255, 0.08);
+        --yellow: #fcee09;
+        --magenta: #ff003c;
+        --cyan: #00f0ff;
+        --text: #f5f7ff;
+        --muted: rgba(245, 247, 255, 0.72);
+        --shadow-yellow: 0 0 24px rgba(252, 238, 9, 0.35);
+        --shadow-cyan: 0 0 28px rgba(0, 240, 255, 0.3);
+        --radius: 22px;
+        --max: 1200px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Noto Sans TC', sans-serif;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 0, 60, 0.16), transparent 24%),
+          radial-gradient(circle at 80% 0%, rgba(0, 240, 255, 0.14), transparent 26%),
+          radial-gradient(circle at 50% 100%, rgba(252, 238, 9, 0.08), transparent 30%),
+          var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.04) 0px,
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 2px,
+          transparent 5px
+        );
+        mix-blend-mode: soft-light;
+        opacity: 0.16;
+        z-index: 99;
+      }
+
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(120deg, transparent 0%, rgba(0, 240, 255, 0.05) 45%, transparent 55%);
+        animation: sweep 8s linear infinite;
+        z-index: 98;
+      }
+
+      @keyframes sweep {
+        from {
+          transform: translateX(-120%);
+        }
+        to {
+          transform: translateX(120%);
+        }
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        width: min(calc(100% - 32px), var(--max));
+        margin: 0 auto;
+      }
+
+      .section {
+        padding: 88px 0;
+        position: relative;
+      }
+
+      .section-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        letter-spacing: 0.08em;
+        margin: 0 0 14px;
+        text-transform: uppercase;
+      }
+
+      .section-kicker {
+        color: var(--yellow);
+        text-transform: uppercase;
+        letter-spacing: 0.26em;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.8rem;
+        margin-bottom: 12px;
+        display: inline-block;
+      }
+
+      .section-desc {
+        color: var(--muted);
+        max-width: 760px;
+        line-height: 1.8;
+        margin-bottom: 32px;
+      }
+
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(16px);
+        background: rgba(10, 10, 15, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .nav-inner {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        color: var(--bg);
+        background: linear-gradient(135deg, var(--yellow), var(--cyan));
+        box-shadow: var(--shadow-yellow);
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--cyan);
+      }
+
+      .hero {
+        min-height: calc(100vh - 72px);
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-grid,
+      .hero-glow,
+      .hero-noise {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .hero-grid {
+        background-image:
+          linear-gradient(rgba(0, 240, 255, 0.14) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 240, 255, 0.14) 1px, transparent 1px);
+        background-size: 70px 70px;
+        mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.75) 25%, black 60%);
+        transform: perspective(900px) rotateX(75deg) scale(1.6) translateY(18%);
+        transform-origin: center center;
+        opacity: 0.28;
+      }
+
+      .hero-glow {
+        background:
+          radial-gradient(circle at 30% 35%, rgba(252, 238, 9, 0.18), transparent 22%),
+          radial-gradient(circle at 68% 28%, rgba(255, 0, 60, 0.16), transparent 26%),
+          radial-gradient(circle at 55% 52%, rgba(0, 240, 255, 0.12), transparent 20%);
+        filter: blur(10px);
+      }
+
+      .hero-noise {
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 45%, rgba(255,255,255,0.02));
+        animation: flicker 4s infinite steps(1);
+        opacity: 0.6;
+      }
+
+      @keyframes flicker {
+        0%, 19%, 21%, 63%, 65%, 100% { opacity: 0.58; }
+        20%, 64% { opacity: 0.34; }
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        padding: 72px 0;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border: 1px solid rgba(252, 238, 9, 0.28);
+        border-radius: 999px;
+        color: var(--yellow);
+        background: rgba(252, 238, 9, 0.05);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        margin: 18px 0 18px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(3rem, 8vw, 6.8rem);
+        line-height: 0.92;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        position: relative;
+      }
+
+      .glitch {
+        position: relative;
+        display: inline-block;
+        text-shadow: 0 0 16px rgba(252, 238, 9, 0.24);
+      }
+
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        overflow: hidden;
+        clip-path: inset(0 0 0 0);
+      }
+
+      .glitch::before {
+        color: var(--cyan);
+        transform: translate(2px, -2px);
+        animation: glitchA 3s infinite linear alternate-reverse;
+      }
+
+      .glitch::after {
+        color: var(--magenta);
+        transform: translate(-2px, 2px);
+        animation: glitchB 2.2s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitchA {
+        0% { clip-path: inset(0 0 82% 0); }
+        20% { clip-path: inset(42% 0 26% 0); }
+        40% { clip-path: inset(14% 0 66% 0); }
+        60% { clip-path: inset(68% 0 8% 0); }
+        80% { clip-path: inset(32% 0 38% 0); }
+        100% { clip-path: inset(74% 0 3% 0); }
+      }
+
+      @keyframes glitchB {
+        0% { clip-path: inset(80% 0 5% 0); }
+        20% { clip-path: inset(8% 0 72% 0); }
+        40% { clip-path: inset(56% 0 20% 0); }
+        60% { clip-path: inset(18% 0 60% 0); }
+        80% { clip-path: inset(44% 0 28% 0); }
+        100% { clip-path: inset(2% 0 88% 0); }
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 700px;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+        line-height: 1.9;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 30px;
+      }
+
+      .button {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 0 22px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.92rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: 0.28s ease;
+        overflow: hidden;
+      }
+
+      .button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.16), transparent 50%);
+        opacity: 0;
+        transition: 0.28s ease;
+      }
+
+      .button:hover::before {
+        opacity: 1;
+      }
+
+      .button.primary {
+        color: var(--bg);
+        background: linear-gradient(135deg, var(--yellow), #fff06d);
+        box-shadow: 0 0 30px rgba(252, 238, 9, 0.26);
+      }
+
+      .button.secondary {
+        color: var(--cyan);
+        background: rgba(0, 240, 255, 0.05);
+        border-color: rgba(0, 240, 255, 0.28);
+        box-shadow: var(--shadow-cyan);
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero-panel {
+        background: linear-gradient(180deg, rgba(18, 20, 31, 0.85), rgba(10, 10, 15, 0.8));
+        border: 1px solid rgba(0, 240, 255, 0.18);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow: var(--shadow-cyan);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-panel::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(0, 240, 255, 0.45), transparent 40%, rgba(255, 0, 60, 0.4));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+      }
+
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        font-family: 'Orbitron', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .status {
+        color: var(--yellow);
+        font-size: 0.82rem;
+      }
+
+      .lobster-art {
+        aspect-ratio: 1 / 1;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 25% 25%, rgba(252, 238, 9, 0.95), transparent 22%),
+          radial-gradient(circle at 75% 32%, rgba(255, 0, 60, 0.88), transparent 26%),
+          radial-gradient(circle at 50% 75%, rgba(0, 240, 255, 0.82), transparent 28%),
+          linear-gradient(135deg, #161625, #0d0d14 55%, #19192a);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .lobster-art::before,
+      .lobster-art::after {
+        content: '🦞';
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: clamp(5rem, 12vw, 8rem);
+        filter: drop-shadow(0 0 30px rgba(252, 238, 9, 0.45));
+      }
+
+      .lobster-art::after {
+        transform: translate(6px, -6px);
+        opacity: 0.24;
+        color: var(--cyan);
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .stat {
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .stat small {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .stat strong {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.2rem;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .nft-card,
+      .info-card,
+      .contract-card,
+      .counter-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        backdrop-filter: blur(14px);
+      }
+
+      .nft-card {
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      .nft-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(0, 240, 255, 0.38);
+        box-shadow: 0 0 0 1px rgba(252, 238, 9, 0.18), 0 18px 50px rgba(0, 240, 255, 0.12);
+      }
+
+      .nft-art {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background: linear-gradient(135deg, #222, #111);
+      }
+
+      .nft-art::before,
+      .nft-art::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+      }
+
+      .nft-art::before {
+        background: var(--gradient, linear-gradient(135deg, var(--yellow), var(--magenta), var(--cyan)));
+      }
+
+      .nft-art::after {
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 22%),
+          repeating-linear-gradient(135deg, rgba(255,255,255,0.08) 0 8px, transparent 8px 16px),
+          linear-gradient(180deg, transparent, rgba(10,10,15,0.35));
+        mix-blend-mode: screen;
+      }
+
+      .nft-meta {
+        padding: 18px;
+      }
+
+      .nft-id {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--yellow);
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+      }
+
+      .nft-name {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .nft-desc {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.7;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .info-card {
+        padding: 24px 20px;
+        min-height: 180px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .info-card::before {
+        content: attr(data-index);
+        position: absolute;
+        right: 14px;
+        top: 10px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.05);
+      }
+
+      .info-icon {
+        font-size: 1.6rem;
+        margin-bottom: 14px;
+      }
+
+      .info-card h3,
+      .contract-card h3,
+      .counter-card h3 {
+        margin: 0 0 12px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.05rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .info-card p,
+      .contract-card p,
+      .counter-card p,
+      .contract-item dd {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .contract-layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 20px;
+      }
+
+      .contract-card,
+      .counter-card {
+        padding: 28px;
+      }
+
+      .contract-list {
+        display: grid;
+        gap: 18px;
+        margin: 24px 0 0;
+      }
+
+      .contract-item {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .contract-item dt {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.82rem;
+        color: var(--cyan);
+        letter-spacing: 0.08em;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+      }
+
+      .mono {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.94rem;
+        word-break: break-all;
+      }
+
+      .link-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .link-button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 18px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        transition: 0.25s ease;
+      }
+
+      .link-button:hover {
+        border-color: rgba(252, 238, 9, 0.4);
+        transform: translateX(3px);
+        box-shadow: var(--shadow-yellow);
+      }
+
+      .counter-value {
+        margin: 10px 0 2px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 800;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        color: var(--yellow);
+        text-shadow: 0 0 18px rgba(252, 238, 9, 0.28);
+      }
+
+      .counter-label {
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+
+      .footer {
+        padding: 36px 0 56px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1080px) {
+        .hero-content,
+        .contract-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .cards-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .nav-inner {
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          padding: 14px 0;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .hero-content {
+          padding: 54px 0 48px;
+        }
+
+        .hero h1 {
+          font-size: clamp(2.5rem, 15vw, 4rem);
+        }
+
+        .hero-stats,
+        .cards-grid,
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section {
+          padding: 72px 0;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="#top" aria-label="龍蝦王 NFT Collection 首頁">
+          <span class="brand-mark">🦞</span>
+          <span>龍蝦王 NFT</span>
+        </a>
+        <div class="nav-links">
+          <a href="#gallery">展示</a>
+          <a href="#tech">技術</a>
+          <a href="#contract">合約</a>
+          <a href="#links">連結</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero" id="top">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-noise"></div>
+      <div class="container hero-content">
+        <div class="reveal visible">
+          <div class="eyebrow">Cyberpunk Polygon Drop</div>
+          <h1>
+            <span class="glitch" data-text="龍蝦王 NFT">龍蝦王 NFT</span><br />
+            Collection
+          </h1>
+          <p>
+            1000 隻獨一無二的 AI 龍蝦，活在區塊鏈上 🦞<br />
+            這不是一般的 NFT，而是一場來自 2077 年霓虹深海的鏈上入侵。每一隻龍蝦都帶著獨特色譜、賽博殼甲與未來感基因，永久封存在 Polygon 網路。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#gallery">立即進入展示艙</a>
+            <a class="button secondary" href="https://polygonscan.com/address/0x499a233286e2Fb497A874bF70733dFb2b065CD7A" target="_blank" rel="noreferrer">查看 PolygonScan</a>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal visible">
+          <div class="panel-head">
+            <span>Collection Signal</span>
+            <span class="status">Live on Polygon</span>
+          </div>
+          <div class="lobster-art" aria-hidden="true"></div>
+          <div class="hero-stats">
+            <div class="stat">
+              <small>Total Supply</small>
+              <strong>1000</strong>
+            </div>
+            <div class="stat">
+              <small>Chain</small>
+              <strong>Polygon</strong>
+            </div>
+            <div class="stat">
+              <small>Status</small>
+              <strong>On-Chain</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" id="gallery">
+        <div class="container">
+          <span class="section-kicker reveal">NFT Gallery</span>
+          <h2 class="section-title reveal">賽博龍蝦展示牆</h2>
+          <p class="section-desc reveal">
+            這裡展示的是概念化的 NFT 卡面。每張卡片以程式隨機生成霓虹漸層與能量紋理，模擬每一隻龍蝦王在鏈上誕生時的獨特視覺 ID。
+          </p>
+          <div class="cards-grid" id="nftGrid"></div>
+        </div>
+      </section>
+
+      <section class="section" id="tech">
+        <div class="container">
+          <span class="section-kicker reveal">Tech Stack</span>
+          <h2 class="section-title reveal">技術架構</h2>
+          <p class="section-desc reveal">
+            原始專案是一個 React NFT Minting DApp。這次重做成純靜態展示頁，保留專案精神與鏈上資訊，同時讓 GitHub Pages 或任何靜態主機都能直接部署。
+          </p>
+          <div class="info-grid">
+            <article class="info-card reveal" data-index="01">
+              <div class="info-icon">⚙️</div>
+              <h3>Solidity 智能合約</h3>
+              <p>負責 NFT 鑄造規則、供應量控制與鏈上資產所有權紀錄，是整個收藏宇宙的核心。</p>
+            </article>
+            <article class="info-card reveal" data-index="02">
+              <div class="info-icon">⚛️</div>
+              <h3>React + Web3.js 前端</h3>
+              <p>原本的 DApp 採用 React 架構，透過 Web3.js 與智能合約互動，處理 mint 流程與資料讀取。</p>
+            </article>
+            <article class="info-card reveal" data-index="03">
+              <div class="info-icon">🦊</div>
+              <h3>MetaMask 錢包連接</h3>
+              <p>使用者透過 MetaMask 連接錢包，授權交易與簽署操作，進入鏈上收藏世界。</p>
+            </article>
+            <article class="info-card reveal" data-index="04">
+              <div class="info-icon">🔷</div>
+              <h3>Polygon 鏈部署</h3>
+              <p>部署在 Polygon 網路，兼顧成本效率與鏈上透明度，讓大量 NFT 收藏更容易推廣。</p>
+            </article>
+            <article class="info-card reveal" data-index="05">
+              <div class="info-icon">🌊</div>
+              <h3>OpenSea 上架</h3>
+              <p>完成發行後可於 NFT 市場展示與流通，讓龍蝦王在二級市場持續擴散它的傳說。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contract">
+        <div class="container">
+          <span class="section-kicker reveal">Contract Data</span>
+          <h2 class="section-title reveal">合約資訊</h2>
+          <div class="contract-layout">
+            <article class="contract-card reveal">
+              <h3>鏈上身份檔案</h3>
+              <p>以下為本系列的核心鏈上資訊。展示頁不直接 mint，但完整保留此系列的合約識別與部署描述。</p>
+              <dl class="contract-list">
+                <div class="contract-item">
+                  <dt>Contract Address</dt>
+                  <dd class="mono">0x499a233286e2Fb497A874bF70733dFb2b065CD7A</dd>
+                </div>
+                <div class="contract-item">
+                  <dt>Chain</dt>
+                  <dd>Polygon</dd>
+                </div>
+                <div class="contract-item">
+                  <dt>Total Supply</dt>
+                  <dd>1000</dd>
+                </div>
+              </dl>
+            </article>
+
+            <aside class="counter-card reveal" id="links">
+              <h3>訪客計數器</h3>
+              <p>每一次進入，這座霓虹展示艙都會留下痕跡。</p>
+              <div class="counter-value" id="visitCount">--</div>
+              <div class="counter-label">Neon Visitors Registered</div>
+              <div class="link-list">
+                <a class="link-button" href="https://polygonscan.com/address/0x499a233286e2Fb497A874bF70733dFb2b065CD7A" target="_blank" rel="noreferrer">
+                  <span>View on PolygonScan</span>
+                  <span>↗</span>
+                </a>
+                <a class="link-button" href="https://opensea.io/collection/lobster-king-nft" target="_blank" rel="noreferrer">
+                  <span>View on OpenSea</span>
+                  <span>↗</span>
+                </a>
+                <a class="link-button" href="https://github.com/scott93723/nft1000" target="_blank" rel="noreferrer">
+                  <span>GitHub Source</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">© 2077 龍蝦王 NFT. ON-CHAIN FOREVER. 🦞</div>
+    </footer>
+
+    <script>
+      const nftGrid = document.getElementById('nftGrid');
+      const palette = [
+        ['#fcee09', '#ff003c', '#00f0ff'],
+        ['#00f0ff', '#6a00ff', '#ff003c'],
+        ['#ff7a00', '#fcee09', '#00f0ff'],
+        ['#00f0ff', '#14ff74', '#fcee09'],
+        ['#ff003c', '#ff4fd8', '#00f0ff'],
+        ['#fcee09', '#00f0ff', '#0a0a0f']
+      ];
+
+      const lobsterNames = [
+        '量子殼甲',
+        '霓虹暴君',
+        '深海駭客',
+        '鏈上幻影',
+        '電漿王座',
+        '黃金裂變',
+        '超頻獵手',
+        '脈衝狂潮',
+        '零日之爪',
+        '合金神諭',
+        '虛空巡航',
+        '夜幕信標'
+      ];
+
+      function buildGradient(index) {
+        const colors = palette[index % palette.length];
+        const angle = 120 + (index * 27) % 180;
+        return `linear-gradient(${angle}deg, ${colors[0]}, ${colors[1]}, ${colors[2]})`;
+      }
+
+      Array.from({ length: 12 }).forEach((_, index) => {
+        const id = String(index + 1).padStart(4, '0');
+        const card = document.createElement('article');
+        card.className = 'nft-card reveal';
+        card.innerHTML = `
+          <div class="nft-art" style="--gradient:${buildGradient(index)}"></div>
+          <div class="nft-meta">
+            <div class="nft-id">#${id}</div>
+            <div class="nft-name">龍蝦王・${lobsterNames[index]}</div>
+            <div class="nft-desc">AI 生成色譜殼甲 × 賽博紋理印記 × Polygon 鏈上身份。</div>
+          </div>
+        `;
+        nftGrid.appendChild(card);
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      document.querySelectorAll('.reveal').forEach((el) => {
+        if (!el.classList.contains('visible')) observer.observe(el);
+      });
+
+      async function loadCounter() {
+        const counter = document.getElementById('visitCount');
+        const namespace = 'lobster-king-nft';
+        const key = 'showcase-page';
+
+        try {
+          const response = await fetch(`https://counterapi.dev/api/${namespace}/${key}/up`);
+          const data = await response.json();
+          counter.textContent = data.count?.toLocaleString?.() || data.count || '1';
+        } catch (error) {
+          counter.textContent = 'N/A';
+          console.error('Counter API error:', error);
+        }
+      }
+
+      loadCounter();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="龍蝦 DAO 去中心化治理頁，展示提案投票、治理規則與社群決策流程。" />
+  <meta property="og:title" content="龍蝦 DAO — 去中心化治理" />
+  <meta property="og:description" content="持有 $LOBSTER 即可參與治理投票，決定龍蝦鏈宇宙的未來。" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>龍蝦 DAO — 去中心化治理</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0a0a0f;--panel:rgba(16,18,28,.88);--yellow:#fcee09;--pink:#ff003c;--cyan:#00f0ff;--green:#00ff88;--text:#edf7ff;--muted:#97a4c4;--line:rgba(255,255,255,.08);--radius:24px;--max:1180px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:radial-gradient(circle at top right,rgba(255,0,60,.14),transparent 25%),radial-gradient(circle at left center,rgba(0,240,255,.12),transparent 28%),linear-gradient(180deg,#0a0a0f,#090a11 58%,#05060a);line-height:1.75;overflow-x:hidden;position:relative}body:before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03)0,rgba(255,255,255,.03)1px,transparent 1px,transparent 4px);opacity:.15;z-index:5}body:after{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,240,255,.04),transparent);animation:scan 8s linear infinite;z-index:4}@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}@keyframes glitch{0%,100%{text-shadow:0 0 8px rgba(252,238,9,.5),0 0 24px rgba(0,240,255,.18);transform:translate(0)}20%{text-shadow:-2px 0 var(--pink),2px 0 var(--cyan);transform:translate(1px,-1px)}40%{text-shadow:2px 0 var(--cyan),-2px 0 var(--pink);transform:translate(-1px,1px)}60%{text-shadow:-1px 0 var(--pink),1px 0 var(--yellow)}80%{text-shadow:1px 0 var(--cyan),-1px 0 var(--pink)}}
+    a{text-decoration:none;color:inherit}.container{width:min(calc(100% - 2rem),var(--max));margin:auto;position:relative;z-index:2}.orbitron,.eyebrow,.tag,h1,h2,h3,.brand,.stat-num{font-family:'Orbitron',sans-serif}.topbar{position:sticky;top:0;z-index:20;background:rgba(10,10,15,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0}.brand{font-weight:900;color:var(--yellow);letter-spacing:.12em}.links{display:flex;gap:.8rem;flex-wrap:wrap}.links a{color:var(--muted);font-size:.82rem}.links a:hover{color:var(--cyan)}
+    .hero{padding:6rem 0 3rem}.eyebrow{display:inline-flex;align-items:center;gap:.6rem;color:var(--yellow);font-size:.82rem;margin-bottom:1rem}.eyebrow:before{content:"";width:42px;height:1px;background:currentColor}.hero-grid,.stats,.proposals,.grid-2,.flow{display:grid;gap:1.2rem}.hero-grid{grid-template-columns:1.1fr .9fr;align-items:start}.stats{grid-template-columns:repeat(3,1fr);margin-top:1.3rem}.proposals{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr 1fr}.flow{grid-template-columns:repeat(4,1fr);align-items:center}.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:var(--radius);padding:1.2rem;box-shadow:0 22px 56px rgba(0,0,0,.24);position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(252,238,9,.05),transparent 35%,transparent 70%,rgba(0,240,255,.05));pointer-events:none}.hero h1{font-size:clamp(2.7rem,7vw,5.5rem);line-height:.9;margin:0 0 1rem;color:var(--yellow);animation:glitch 3.2s infinite}.hero h1 span{display:block;color:var(--cyan)}.muted{color:var(--muted)}.btn{display:inline-flex;align-items:center;justify-content:center;padding:.9rem 1.2rem;border-radius:999px;font-weight:800;border:1px solid transparent;cursor:pointer;transition:.25s}.btn:hover{transform:translateY(-2px)}.btn-primary{background:linear-gradient(135deg,var(--yellow),#ffe66e);color:#191702}.btn-secondary{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.12)}.btn-green{background:linear-gradient(135deg,var(--green),#7effc2);color:#04150f}.btn-red{background:linear-gradient(135deg,var(--pink),#ff5980);color:#fff}.stat-num{font-size:1.6rem}.status{display:inline-flex;padding:.35rem .7rem;border-radius:999px;font-size:.78rem;font-weight:700}.status.live{background:rgba(0,255,136,.12);color:var(--green)}.status.done{background:rgba(252,238,9,.14);color:var(--yellow)}.progress{height:12px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;margin:.9rem 0 .55rem}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));box-shadow:0 0 20px rgba(252,238,9,.2)}.proposal-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}.flow-step{padding:1.1rem;text-align:center}.arrow{text-align:center;color:var(--cyan);font-size:1.4rem}.footer{text-align:center;color:var(--muted);padding:2rem 0 4rem}.reveal{opacity:0;transform:translateY(24px);transition:.8s ease}.reveal.in{opacity:1;transform:none}@media(max-width:960px){.hero-grid,.grid-2,.proposals,.stats,.flow{grid-template-columns:1fr}.arrow{display:none}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <div class="brand orbitron">🦞 LOBSTER</div>
+      <nav class="links orbitron">
+        <a href="./index.html">NFT</a>
+        <a href="./token.html">Token</a>
+        <a href="./exchange.html">Exchange</a>
+        <a href="./dex.html">DEX</a>
+        <a href="./staking.html">Staking</a>
+        <a href="./dao.html">DAO</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">DAO Governance Layer</span>
+        <h1>龍蝦 DAO <span>去中心化治理</span></h1>
+        <p>持有 <strong>$LOBSTER</strong> 即可參與投票，決定質押獎勵、空投、流動池與整個龍蝦鏈宇宙的未來方向。</p>
+        <p class="muted">這一頁把 DAO 規則、提案投票與治理流程直接做成可互動的治理面板，讓你的區塊鏈作品不只像專案，而像一整個生態。</p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.2rem;">
+          <a class="btn btn-primary" href="#proposals">查看提案</a>
+          <a class="btn btn-secondary" href="#vote">立即投票</a>
+        </div>
+      </div>
+      <div class="stats reveal">
+        <div class="card"><div class="muted">總提案數</div><div class="stat-num">12</div></div>
+        <div class="card"><div class="muted">總投票人數</div><div class="stat-num">3,200</div></div>
+        <div class="card"><div class="muted">DAO 金庫</div><div class="stat-num">50,000,000</div><div class="muted">$LOBSTER</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="proposals" style="padding-bottom:3rem;">
+    <div class="reveal" style="margin-bottom:1rem;"><span class="eyebrow">Active Proposals</span><h2 class="orbitron">活躍提案</h2></div>
+    <div class="proposals">
+      <article class="card reveal proposal-card" data-yes="89" data-no="11">
+        <div class="status live">投票中</div>
+        <h3>提案 #001：是否增加質押獎勵？</h3>
+        <p class="muted">把 90 天與 365 天質押方案的年化報酬上調，吸引更多長期持有者。</p>
+        <div class="progress"><span style="width:89%"></span></div>
+        <div><strong class="yes-text">贊成 89%</strong> / <span class="no-text">反對 11%</span></div>
+        <div class="muted" style="margin-top:.5rem;">投票截止：2077/03/15</div>
+      </article>
+      <article class="card reveal proposal-card" data-yes="95" data-no="5">
+        <div class="status done">已通過 ✅</div>
+        <h3>提案 #002：是否空投給早期持有者？</h3>
+        <p class="muted">對創世 NFT 與早期代幣持有者發放額外 $LOBSTER 獎勵。</p>
+        <div class="progress"><span style="width:95%"></span></div>
+        <div><strong class="yes-text">贊成 95%</strong> / <span class="no-text">反對 5%</span></div>
+      </article>
+      <article class="card reveal proposal-card" data-yes="62" data-no="38">
+        <div class="status live">投票中</div>
+        <h3>提案 #003：是否將 DAO 金庫 5% 用於行銷？</h3>
+        <p class="muted">撥用部分金庫作為品牌推廣、社群擴張與交易所曝光預算。</p>
+        <div class="progress"><span style="width:62%"></span></div>
+        <div><strong class="yes-text">贊成 62%</strong> / <span class="no-text">反對 38%</span></div>
+      </article>
+      <article class="card reveal proposal-card" data-yes="97" data-no="3">
+        <div class="status done">已通過 ✅</div>
+        <h3>提案 #004：是否上架 QuickSwap 流動池？</h3>
+        <p class="muted">建立官方流動性池，讓 $LOBSTER 可在 Polygon 生態中自由交易。</p>
+        <div class="progress"><span style="width:97%"></span></div>
+        <div><strong class="yes-text">贊成 97%</strong> / <span class="no-text">反對 3%</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="container" id="vote" style="padding-bottom:3rem;">
+    <div class="grid-2">
+      <article class="card reveal">
+        <span class="eyebrow">Vote Simulator</span>
+        <h2 class="orbitron">模擬投票</h2>
+        <p class="muted">選一個提案，然後投下你的贊成或反對票。這是純前端模擬，但互動邏輯是真的。</p>
+        <label class="muted" for="proposalSelect">選擇提案</label>
+        <select id="proposalSelect" style="width:100%;margin:.6rem 0 1rem;padding:1rem;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.12);color:var(--text);">
+          <option value="0">提案 #001：增加質押獎勵</option>
+          <option value="1">提案 #002：空投早期持有者</option>
+          <option value="2">提案 #003：DAO 金庫 5% 行銷</option>
+          <option value="3">提案 #004：上架 QuickSwap</option>
+        </select>
+        <div class="proposal-actions">
+          <button class="btn btn-green" id="voteYes">贊成</button>
+          <button class="btn btn-red" id="voteNo">反對</button>
+        </div>
+        <div id="voteResult" style="margin-top:1rem;color:var(--yellow);font-weight:700;"></div>
+      </article>
+
+      <article class="card reveal">
+        <span class="eyebrow">DAO Rules</span>
+        <h2 class="orbitron">治理規則</h2>
+        <p>• 持有 <strong>1,000 $LOBSTER</strong> 以上才能投票</p>
+        <p>• <strong>1 $LOBSTER = 1 票</strong></p>
+        <p>• 提案需 <strong>超過 50% 贊成</strong> 才通過</p>
+        <p>• 投票期固定 <strong>7 天</strong></p>
+        <p>• 通過後由核心團隊或智能合約執行</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="container" style="padding-bottom:3rem;">
+    <div class="reveal" style="margin-bottom:1rem;"><span class="eyebrow">Governance Flow</span><h2 class="orbitron">治理流程圖</h2></div>
+    <div class="flow">
+      <div class="card flow-step reveal"><strong>提出提案</strong><p class="muted">社群或團隊提出改善方向</p></div>
+      <div class="arrow reveal">→</div>
+      <div class="card flow-step reveal"><strong>社群討論</strong><p class="muted">檢視風險、成本與效益</p></div>
+      <div class="arrow reveal">→</div>
+      <div class="card flow-step reveal"><strong>正式投票</strong><p class="muted">持幣者用票決定結果</p></div>
+      <div class="arrow reveal">→</div>
+      <div class="card flow-step reveal"><strong>執行提案</strong><p class="muted">通過後進入產品或鏈上流程</p></div>
+    </div>
+  </section>
+
+  <footer class="footer container">
+    © 2077 LOBSTER DAO. GOVERNED BY THE COMMUNITY. 🦞
+    <div style="margin-top:.8rem;color:var(--yellow);">訪客數：<span id="visits">--</span></div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    const cards = [...document.querySelectorAll('.proposal-card')];
+    const proposalSelect = document.getElementById('proposalSelect');
+    const voteResult = document.getElementById('voteResult');
+
+    function updateCard(index, deltaYes, deltaNo){
+      const card = cards[index];
+      let yes = Number(card.dataset.yes);
+      let no = Number(card.dataset.no);
+      yes += deltaYes;
+      no += deltaNo;
+      const total = yes + no;
+      const yesPct = Math.max(1, Math.min(99, Math.round((yes / total) * 100)));
+      const noPct = 100 - yesPct;
+      card.dataset.yes = yes;
+      card.dataset.no = no;
+      card.querySelector('.progress span').style.width = yesPct + '%';
+      card.querySelector('.yes-text').textContent = `贊成 ${yesPct}%`;
+      card.querySelector('.no-text').textContent = `反對 ${noPct}%`;
+    }
+
+    document.getElementById('voteYes').addEventListener('click', ()=>{
+      const i = Number(proposalSelect.value);
+      updateCard(i, 3, 0);
+      voteResult.textContent = '✅ 你的贊成票已送出，治理權正在發光。';
+    });
+
+    document.getElementById('voteNo').addEventListener('click', ()=>{
+      const i = Number(proposalSelect.value);
+      updateCard(i, 0, 3);
+      voteResult.textContent = '⚠️ 你的反對票已送出，社群仍在激烈辯論中。';
+    });
+
+    fetch('https://counterapi.dev/api/lobster-dao-2077/visits/up')
+      .then(r=>r.json())
+      .then(d=>{document.getElementById('visits').textContent = d.count ?? d.value ?? '--';})
+      .catch(()=>{});
+  </script>
+</body>
+</html>

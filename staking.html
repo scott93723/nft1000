@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="龍蝦幣 $LOBSTER 質押頁，鎖倉賺取高 APY 被動收入，Cyberpunk 2077 風格靜態展示。" />
+  <meta property="og:title" content="LOBSTER STAKING 2077" />
+  <meta property="og:description" content="質押龍蝦幣，賺取被動收入。30 / 90 / 365 天鎖倉方案與即時計算器。" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>LOBSTER STAKING 2077</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0a0a0f;
+      --panel:rgba(17,19,30,.82);
+      --panel-2:rgba(10,14,24,.92);
+      --yellow:#fcee09;
+      --red:#ff003c;
+      --cyan:#00f0ff;
+      --green:#00ff88;
+      --text:#edf7ff;
+      --muted:#9aa7c8;
+      --line:rgba(255,255,255,.08);
+      --shadow-yellow:0 0 24px rgba(252,238,9,.28);
+      --shadow-red:0 0 24px rgba(255,0,60,.24);
+      --shadow-cyan:0 0 28px rgba(0,240,255,.2);
+      --radius:24px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:'Noto Sans TC',sans-serif;
+      color:var(--text);
+      line-height:1.75;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 10% 10%,rgba(255,0,60,.16),transparent 24%),
+        radial-gradient(circle at 90% 0%,rgba(0,240,255,.14),transparent 30%),
+        radial-gradient(circle at 50% 100%,rgba(0,255,136,.08),transparent 26%),
+        linear-gradient(180deg,#0a0a0f,#090b12 58%,#06070b);
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035)0,rgba(255,255,255,.035)1px,transparent 2px,transparent 5px);
+      opacity:.16;
+      z-index:20;
+      mix-blend-mode:soft-light;
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:-20%;
+      pointer-events:none;
+      background:linear-gradient(120deg,transparent 30%,rgba(0,240,255,.05)48%,transparent 52%);
+      animation:sweep 8s linear infinite;
+      z-index:19;
+    }
+    @keyframes sweep{from{transform:translateX(-35%)}to{transform:translateX(35%)}}
+    @keyframes flicker{0%,18%,22%,62%,64%,100%{opacity:1}20%,24%,63%{opacity:.55}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes glitch1{0%,100%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,0)}80%{transform:translate(1px,1px)}}
+    @keyframes glitch2{0%,100%{transform:translate(0)}20%{transform:translate(3px,0)}40%{transform:translate(-3px,1px)}60%{transform:translate(2px,-1px)}80%{transform:translate(-1px,1px)}}
+
+    a{text-decoration:none;color:inherit}
+    .container{width:min(calc(100% - 2rem),var(--max));margin:auto}
+    .orbitron,h1,h2,h3,.eyebrow,.stat-value,.plan-apy,.calc-number,.brand,.nav-links a,.btn{font-family:'Orbitron',sans-serif}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:rgba(10,10,15,.78);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      min-height:74px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:.9rem 0;
+    }
+    .brand{
+      font-weight:900;
+      letter-spacing:.14em;
+      color:var(--yellow);
+      display:flex;
+      align-items:center;
+      gap:.7rem;
+      text-transform:uppercase;
+      text-shadow:0 0 12px rgba(252,238,9,.3);
+      white-space:nowrap;
+    }
+    .nav-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.95rem;
+      justify-content:flex-end;
+    }
+    .nav-links a{
+      font-size:.82rem;
+      letter-spacing:.08em;
+      color:var(--muted);
+      text-transform:uppercase;
+      transition:.25s;
+    }
+    .nav-links a:hover,.nav-links a.active{color:var(--cyan);text-shadow:0 0 10px rgba(0,240,255,.35)}
+
+    .hero{position:relative;padding:5.5rem 0 3rem;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1.4rem;align-items:center;position:relative;z-index:2}
+    .hero-grid::before{
+      content:"";
+      position:absolute;
+      inset:auto 0 -2rem 0;
+      height:180px;
+      background:linear-gradient(180deg,transparent,rgba(0,240,255,.08));
+      filter:blur(30px);
+      z-index:-1;
+    }
+    .hero-panel,.card{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 24px 60px rgba(0,0,0,.28);
+    }
+    .hero-copy{padding:1rem 0}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:.7rem;
+      color:var(--yellow);
+      font-size:.82rem;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      margin-bottom:1.2rem;
+    }
+    .eyebrow::before{content:"";width:44px;height:1px;background:currentColor;box-shadow:var(--shadow-yellow)}
+
+    h1{
+      position:relative;
+      margin:0 0 1rem;
+      font-size:clamp(2.8rem,7vw,6.2rem);
+      line-height:.92;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      color:var(--yellow);
+      text-shadow:0 0 18px rgba(252,238,9,.2);
+      display:inline-block;
+      animation:flicker 5s infinite steps(1);
+    }
+    h1::before,h1::after{
+      content:attr(data-text);
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      mix-blend-mode:screen;
+      opacity:.7;
+    }
+    h1::before{color:var(--cyan);clip-path:polygon(0 2%,100% 0,100% 32%,0 38%);animation:glitch1 .8s infinite linear alternate-reverse}
+    h1::after{color:var(--red);clip-path:polygon(0 62%,100% 56%,100% 100%,0 100%);animation:glitch2 .9s infinite linear alternate-reverse}
+
+    .hero-copy p{max-width:660px;color:var(--muted);font-size:1.04rem;margin:0 0 1rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.6rem}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      padding:.9rem 1.35rem;
+      border-radius:999px;
+      border:1px solid transparent;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      transition:.25s ease;
+      cursor:pointer;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:linear-gradient(135deg,var(--yellow),#fff06c);color:#161403;box-shadow:var(--shadow-yellow)}
+    .btn-secondary{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.12);color:var(--text)}
+
+    .hero-side{padding:1.35rem;position:relative;overflow:hidden}
+    .hero-side::before{
+      content:"STAKING / 2077 / LIVE";
+      position:absolute;
+      right:-2rem;
+      top:1rem;
+      font-family:'Orbitron',sans-serif;
+      font-size:.76rem;
+      letter-spacing:.26em;
+      color:rgba(0,240,255,.16);
+      transform:rotate(90deg);
+    }
+    .hud{
+      display:grid;
+      gap:1rem;
+    }
+    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+    .stat{
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:18px;
+      padding:1rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .stat::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -65% auto;
+      width:110px;
+      height:110px;
+      background:radial-gradient(circle,rgba(0,240,255,.18),transparent 65%);
+    }
+    .stat-label{font-size:.84rem;color:var(--muted);margin-bottom:.45rem}
+    .stat-value{font-size:clamp(1.4rem,4vw,2rem);font-weight:800;letter-spacing:.05em}
+    .stat-value.yellow{color:var(--yellow)}
+    .stat-value.cyan{color:var(--cyan)}
+    .hud-bar{
+      height:14px;
+      background:rgba(255,255,255,.05);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      margin:.75rem 0 .4rem;
+    }
+    .hud-fill{
+      width:74%;
+      height:100%;
+      background:linear-gradient(90deg,var(--green),var(--cyan),var(--yellow));
+      box-shadow:0 0 18px rgba(0,255,136,.24);
+    }
+    .pulse-box{
+      margin-top:.8rem;
+      border:1px solid rgba(255,0,60,.16);
+      border-radius:18px;
+      padding:1rem;
+      background:linear-gradient(135deg,rgba(255,0,60,.08),rgba(0,240,255,.05));
+      animation:float 5s ease-in-out infinite;
+    }
+    .pulse-box strong{color:var(--green)}
+
+    .section{padding:2rem 0 3.25rem}
+    .section-title{
+      margin:0 0 .9rem;
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(1.8rem,4.5vw,3.2rem);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .section-desc{color:var(--muted);max-width:720px;margin:0 0 1.6rem}
+
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+    .plan{padding:1.3rem;position:relative;overflow:hidden}
+    .plan::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(160deg,rgba(255,255,255,.03),transparent 35%);
+      pointer-events:none;
+    }
+    .plan-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      padding:.35rem .7rem;
+      border-radius:999px;
+      font-size:.76rem;
+      color:var(--bg);
+      background:var(--yellow);
+      font-family:'Orbitron',sans-serif;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .plan:nth-child(2) .plan-tag{background:var(--cyan)}
+    .plan:nth-child(3) .plan-tag{background:var(--green)}
+    .plan h3{margin:1rem 0 .25rem;font-size:1.5rem;text-transform:uppercase;letter-spacing:.08em}
+    .plan-apy{font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(--yellow);line-height:1;text-shadow:0 0 16px rgba(252,238,9,.14)}
+    .plan:nth-child(2) .plan-apy{color:var(--cyan);text-shadow:0 0 16px rgba(0,240,255,.16)}
+    .plan:nth-child(3) .plan-apy{color:var(--green);text-shadow:0 0 16px rgba(0,255,136,.18)}
+    .plan ul{padding-left:1.15rem;margin:1rem 0 1.2rem;color:var(--muted)}
+    .plan li+li{margin-top:.3rem}
+    .plan .btn{width:100%}
+
+    .calc-wrap{display:grid;grid-template-columns:1fr .95fr;gap:1.2rem;align-items:stretch}
+    .calc-card,.rules-card{padding:1.35rem}
+    .field{margin-bottom:1rem}
+    .field label{display:block;margin-bottom:.45rem;font-weight:700;color:#dce8ff}
+    .field input,.field select{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.09);
+      color:var(--text);
+      padding:1rem 1rem;
+      font-size:1rem;
+      font-family:inherit;
+    }
+    .field input:focus,.field select:focus{border-color:rgba(0,240,255,.4);box-shadow:0 0 0 3px rgba(0,240,255,.08)}
+    .calc-results{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+    .result{
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:1rem;
+    }
+    .result span{display:block;color:var(--muted);font-size:.86rem;margin-bottom:.4rem}
+    .calc-number{font-size:clamp(1.2rem,3vw,1.7rem);font-weight:800;letter-spacing:.03em}
+    .calc-number.daily{color:var(--cyan)}
+    .calc-number.monthly{color:var(--yellow)}
+    .calc-number.total{color:var(--green)}
+    .calc-note{margin-top:1rem;color:var(--muted);font-size:.94rem}
+
+    .rules-list{display:grid;gap:.85rem;margin-top:1rem}
+    .rule{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:.8rem;
+      align-items:start;
+      padding:1rem;
+      border-radius:18px;
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .rule-index{
+      width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+      font-family:'Orbitron',sans-serif;font-weight:800;background:rgba(252,238,9,.14);color:var(--yellow)
+    }
+    .rule strong{display:block;margin-bottom:.15rem;color:#fff}
+    .rule p{margin:0;color:var(--muted)}
+
+    .footer{padding:2rem 0 4rem;text-align:center;color:var(--muted)}
+    .footer strong{color:var(--yellow)}
+    .counter{margin-top:.85rem;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:.08em}
+
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+    .reveal.in{opacity:1;transform:none}
+
+    @media (max-width:960px){
+      .hero-grid,.calc-wrap,.plans{grid-template-columns:1fr}
+      .calc-results,.stat-grid{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:680px){
+      .nav{align-items:flex-start;flex-direction:column}
+      .nav-links{justify-content:flex-start}
+      .hero{padding-top:4.5rem}
+      .calc-results,.stat-grid{grid-template-columns:1fr}
+      h1{font-size:clamp(2.4rem,13vw,4rem)}
+      .btn{width:100%}
+      .hero-actions{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="./index.html">🦞 LOBSTER</a>
+      <nav class="nav-links">
+        <a href="./index.html">index</a>
+        <a href="./token.html">token</a>
+        <a href="./exchange.html">exchange</a>
+        <a href="./dex.html">dex</a>
+        <a href="./staking.html" class="active">staking</a>
+        <a href="./dao.html">dao</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy reveal">
+        <span class="eyebrow">Passive Yield Protocol</span>
+        <h1 data-text="質押龍蝦幣，賺取被動收入">質押龍蝦幣，賺取被動收入</h1>
+        <p>把 <strong style="color:var(--yellow)">$LOBSTER</strong> 鎖進智能合約，讓時間幫你賺錢。選擇鎖倉週期、啟動你的收益引擎，讓龍蝦幣在鏈上日夜工作。</p>
+        <p>這不是銀行定存，這是來自 2077 的高壓收益艙。鎖得越久，APY 越狂，收益曲線越像霓虹燈一樣往上燒。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#plans">查看方案</a>
+          <a class="btn btn-secondary" href="#calculator">試算收益</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel hero-side reveal">
+        <div class="hud">
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="stat-label">模擬總質押量</div>
+              <div class="stat-value yellow">420,690,000</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">質押者</div>
+              <div class="stat-value cyan">6,900 人</div>
+            </div>
+          </div>
+          <div>
+            <div class="stat-label">Staking Vault Utilization</div>
+            <div class="hud-bar"><div class="hud-fill"></div></div>
+            <div class="stat-label">系統顯示：收益引擎穩定運轉，龍蝦艦隊火力全開。</div>
+          </div>
+          <div class="pulse-box">
+            <div class="stat-label">今日鏈上訊號</div>
+            <strong>+12.77% Reward Pulse</strong>
+            <div style="color:var(--muted);margin-top:.35rem">長鎖倉方案正在吸納更多籌碼，365 天艙位最受歡迎。</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="plans">
+    <div class="container">
+      <h2 class="section-title reveal">質押方案</h2>
+      <p class="section-desc reveal">三種鎖倉模式，對應三種收益曲線。短線補血、中線加速、長線爆衝，全都寫進你的龍蝦收益協議裡。</p>
+      <div class="plans">
+        <article class="card plan reveal">
+          <span class="plan-tag">bronze lock</span>
+          <h3>30 天艙位</h3>
+          <div class="plan-apy">69% APY</div>
+          <ul>
+            <li>適合想快速輪動部位的獵手</li>
+            <li>低門檻進場，資金機動性較高</li>
+            <li>每日自動累積收益訊號</li>
+          </ul>
+          <a class="btn btn-primary" href="#calculator" data-days="30">Stake Now</a>
+        </article>
+
+        <article class="card plan reveal">
+          <span class="plan-tag">neon lock</span>
+          <h3>90 天艙位</h3>
+          <div class="plan-apy">169% APY</div>
+          <ul>
+            <li>中期部署最平衡，收益火力升級</li>
+            <li>適合想放大持倉效率的玩家</li>
+            <li>鎖倉期更長，獎勵權重更高</li>
+          </ul>
+          <a class="btn btn-primary" href="#calculator" data-days="90">Stake Now</a>
+        </article>
+
+        <article class="card plan reveal">
+          <span class="plan-tag">omega lock</span>
+          <h3>365 天艙位</h3>
+          <div class="plan-apy">420.69% APY</div>
+          <ul>
+            <li>給信仰最硬、手最穩的深海巨鰲</li>
+            <li>收益倍率最高，適合長期埋伏</li>
+            <li>全艙位中最瘋狂的被動收入模式</li>
+          </ul>
+          <a class="btn btn-primary" href="#calculator" data-days="365">Stake Now</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="calculator">
+    <div class="container calc-wrap">
+      <article class="card calc-card reveal">
+        <h2 class="section-title" style="font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:.65rem">質押計算器</h2>
+        <p class="section-desc" style="margin-bottom:1.2rem">輸入數量、選擇鎖倉期，收益會即時刷新。以下為靜態模擬試算，方便你感受龍蝦幣收益有多兇。</p>
+
+        <div class="field">
+          <label for="amount">質押數量（$LOBSTER）</label>
+          <input id="amount" type="number" min="0" step="1" value="10000" placeholder="輸入你要質押的龍蝦幣數量" />
+        </div>
+
+        <div class="field">
+          <label for="lockPeriod">鎖倉期</label>
+          <select id="lockPeriod">
+            <option value="30" data-apy="69">30 天 / 69% APY</option>
+            <option value="90" data-apy="169">90 天 / 169% APY</option>
+            <option value="365" data-apy="420.69">365 天 / 420.69% APY</option>
+          </select>
+        </div>
+
+        <div class="calc-results">
+          <div class="result">
+            <span>每日收益</span>
+            <div class="calc-number daily" id="dailyReward">0 LOBSTER</div>
+          </div>
+          <div class="result">
+            <span>每月收益</span>
+            <div class="calc-number monthly" id="monthlyReward">0 LOBSTER</div>
+          </div>
+          <div class="result">
+            <span>鎖倉總收益</span>
+            <div class="calc-number total" id="totalReward">0 LOBSTER</div>
+          </div>
+        </div>
+
+        <div class="calc-note" id="calcNote">目前以 30 天 / 69% APY 模擬，收益按單利估算，不含價格波動與鏈上手續費。</div>
+      </article>
+
+      <article class="card rules-card reveal">
+        <h2 class="section-title" style="font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:.65rem">質押規則</h2>
+        <p class="section-desc" style="margin-bottom:1.2rem">先看規矩，再把龍蝦送進收益艙。這些條件決定你的收益體驗與風險節奏。</p>
+        <div class="rules-list">
+          <div class="rule">
+            <div class="rule-index">01</div>
+            <div>
+              <strong>鎖倉期間不可提前提領</strong>
+              <p>一旦啟動方案，資產會被鎖進對應天數的智能合約艙位，期間無法中途解鎖。</p>
+            </div>
+          </div>
+          <div class="rule">
+            <div class="rule-index">02</div>
+            <div>
+              <strong>APY 為模擬值，用於頁面展示</strong>
+              <p>69% / 169% / 420.69% 為靜態展示數字，實際上鏈部署時需依合約參數與獎勵池設定為準。</p>
+            </div>
+          </div>
+          <div class="rule">
+            <div class="rule-index">03</div>
+            <div>
+              <strong>收益按單利試算</strong>
+              <p>計算器以單利模式估算每日、每月與鎖倉總收益，方便快速比較不同期限的收益強度。</p>
+            </div>
+          </div>
+          <div class="rule">
+            <div class="rule-index">04</div>
+            <div>
+              <strong>請預留 Gas 與風險緩衝</strong>
+              <p>實際質押前，請確認你所在鏈的手續費、合約安全性與個人倉位管理，不要把所有龍蝦一次梭哈。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer class="footer container reveal">
+    <div>© 2077 <strong>LOBSTER STAKING</strong>. POWERED BY 龍蝦王. 🦞</div>
+    <div class="counter">COUNTER // <span id="visits">--</span></div>
+  </footer>
+
+  <script>
+    const amountInput = document.getElementById('amount');
+    const periodSelect = document.getElementById('lockPeriod');
+    const dailyReward = document.getElementById('dailyReward');
+    const monthlyReward = document.getElementById('monthlyReward');
+    const totalReward = document.getElementById('totalReward');
+    const calcNote = document.getElementById('calcNote');
+    const visitEl = document.getElementById('visits');
+
+    const plans = {
+      30: 69,
+      90: 169,
+      365: 420.69
+    };
+
+    function formatNumber(num){
+      return new Intl.NumberFormat('zh-Hant', { maximumFractionDigits: 2 }).format(num);
+    }
+
+    function calculate(){
+      const amount = Math.max(Number(amountInput.value) || 0, 0);
+      const days = Number(periodSelect.value);
+      const apy = plans[days] || 0;
+      const daily = amount * (apy / 100) / 365;
+      const monthly = daily * 30;
+      const total = daily * days;
+
+      dailyReward.textContent = `${formatNumber(daily)} LOBSTER`;
+      monthlyReward.textContent = `${formatNumber(monthly)} LOBSTER`;
+      totalReward.textContent = `${formatNumber(total)} LOBSTER`;
+      calcNote.textContent = `目前以 ${days} 天 / ${apy}% APY 模擬，收益按單利估算，不含價格波動、複利效果與鏈上手續費。`;
+    }
+
+    amountInput.addEventListener('input', calculate);
+    periodSelect.addEventListener('change', calculate);
+
+    document.querySelectorAll('[data-days]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const days = btn.getAttribute('data-days');
+        periodSelect.value = days;
+        calculate();
+      });
+    });
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) entry.target.classList.add('in');
+      });
+    }, { threshold: .14 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    calculate();
+
+    fetch('https://counterapi.dev/api/lobster-staking-2077/visits/up')
+      .then(r => r.json())
+      .then(d => { visitEl.textContent = d.count ?? d.value ?? '--'; })
+      .catch(() => {});
+  </script>
+</body>
+</html>
